@@ -1,0 +1,100 @@
+rules_version = '2';
+
+// =====================================================================
+// REGLAS DE SEGURIDAD de la base de RepoCar (Firestore).
+//
+// Las chequea el SERVIDOR en cada lectura y escritura: aunque alguien
+// modifique la app, no puede saltearlas. Se apoyan en Firebase
+// Authentication: request.auth dice quién está pidiendo.
+//
+// Los talleres entran con un mail armado con su CUIT
+// (30712345671@taller.repocar.app): así la regla sabe de qué taller es
+// cada publicación y cada pedido.
+// =====================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ¿Entró alguien?
+    function adentro() {
+      return request.auth != null;
+    }
+
+    // ¿Es la cuenta de TalleresYa?
+    function esAdmin() {
+      return adentro() && request.auth.token.email == 'admin@talleresya.com';
+    }
+
+    // ¿El que pide es el taller de ese CUIT?
+    function esElTaller(cuit) {
+      return adentro()
+        && request.auth.token.email == cuit.replace('-', '') + '@taller.repocar.app';
+    }
+
+    // ¿El cambio toca solo estos campos?
+    function soloCambia(campos) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(campos);
+    }
+
+    // PIEZAS: el catálogo lo ve cualquiera, como en cualquier tienda.
+    // Publica, edita, pausa y borra SOLO el taller dueño. Cualquiera con
+    // cuenta puede marcarla vendida (es lo que hace la compra) y nada más.
+    match /piezas/{id} {
+      allow read: if true;
+      // Las piezas de ejemplo no están en el servidor: la primera venta
+      // las sube ya vendidas.
+      allow create: if esElTaller(request.resource.data.taller_cuit)
+        || (adentro() && request.resource.data.vendida == true);
+      allow update: if esElTaller(resource.data.taller_cuit)
+        || (adentro()
+            && soloCambia(['vendida', 'pausada', 'borrada'])
+            && request.resource.data.get('pausada', false) == resource.data.get('pausada', false)
+            && request.resource.data.get('borrada', false) == resource.data.get('borrada', false));
+      allow delete: if false; // borrar es marcarla "borrada"
+    }
+
+    // PEDIDOS: los ve quien tiene cuenta. Los crea quien compra. El estado
+    // y la respuesta los cambia el taller del pedido; la calificación,
+    // cualquiera con cuenta (no puede tocar nada más).
+    match /pedidos/{numero} {
+      allow read: if adentro();
+      allow create: if adentro();
+      allow update: if esElTaller(resource.data.taller_cuit)
+        || esAdmin()
+        || (adentro() && soloCambia(['calificacion']));
+      allow delete: if false;
+    }
+
+    // CUENTAS: las ve quien tiene cuenta. Cada uno escribe SOLO la suya.
+    // Las contraseñas no están acá: las tiene Firebase Authentication.
+    match /cuentas/{id} {
+      allow read: if adentro();
+      allow write: if (request.resource.data.tipo == 'talleres'
+                        && esElTaller(request.resource.data.cuit))
+        || (request.resource.data.tipo == 'clientes'
+            && adentro()
+            && request.auth.token.email == request.resource.data.usuario);
+    }
+
+    // CONTADORES: el número del próximo pedido (#2001, #2002...). Lo usa
+    // la transacción de base_remota.dart. Cualquiera con cuenta puede
+    // sumarle UNO, y nada más: no puede bajarlo ni saltearse números.
+    match /contadores/{nombre} {
+      allow read: if adentro();
+      allow create: if adentro() && request.resource.data.ultimo is int;
+      allow update: if adentro()
+        && request.resource.data.ultimo == resource.data.ultimo + 1;
+    }
+
+    // TOKENS DE PUSH: la "dirección" de cada teléfono en FCM, uno por
+    // usuario. Cada uno lee y escribe SOLO el suyo (el id del documento
+    // es su usuario de Firebase Authentication).
+    match /tokens/{uid} {
+      allow read, write: if adentro() && request.auth.uid == uid;
+    }
+
+    // Todo lo demás: cerrado.
+    match /{todo=**} {
+      allow read, write: if false;
+    }
+  }
+}

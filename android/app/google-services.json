@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "2598896431",
+    "project_id": "repocar-8cad3",
+    "storage_bucket": "repocar-8cad3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2598896431:android:91a401a8751b6fc99357da",
+        "android_client_info": {
+          "package_name": "com.example.repocar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDR2yXMNSjv4yFT6nfhEbRPtr4P5I9StE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

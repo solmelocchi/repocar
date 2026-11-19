@@ -1,0 +1,14 @@
+[
+  {"marca": "Volkswagen", "modelo": "Gol Trend", "desde": 2008, "hasta": 2016},
+  {"marca": "Volkswagen", "modelo": "Amarok", "desde": 2010, "hasta": 2022},
+  {"marca": "Chevrolet", "modelo": "Corsa Classic", "desde": 2000, "hasta": 2013},
+  {"marca": "Chevrolet", "modelo": "Onix", "desde": 2016, "hasta": 2024},
+  {"marca": "Ford", "modelo": "Fiesta Kinetic", "desde": 2011, "hasta": 2019},
+  {"marca": "Ford", "modelo": "Ranger", "desde": 2012, "hasta": 2022},
+  {"marca": "Renault", "modelo": "Clio Mío", "desde": 2000, "hasta": 2016},
+  {"marca": "Renault", "modelo": "Kangoo", "desde": 2008, "hasta": 2018},
+  {"marca": "Toyota", "modelo": "Hilux", "desde": 2012, "hasta": 2020},
+  {"marca": "Toyota", "modelo": "Etios", "desde": 2013, "hasta": 2023},
+  {"marca": "Peugeot", "modelo": "208", "desde": 2013, "hasta": 2022},
+  {"marca": "Fiat", "modelo": "Cronos", "desde": 2018, "hasta": 2024}
+]
