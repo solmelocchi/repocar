@@ -161,6 +161,9 @@ class CatalogoRepository {
     return _fotos.guardar(id, chica);
   }
 
+  /// Borra una foto que ya no usa ninguna publicación.
+  Future<void> borrarFoto(String referencia) => _fotos.borrar(referencia);
+
   Future<void> publicar(Pieza pieza) async {
     // Primero en la lista y después a la base: cuando el servidor
     // devuelve el eco de esto mismo, ya está y no se duplica.

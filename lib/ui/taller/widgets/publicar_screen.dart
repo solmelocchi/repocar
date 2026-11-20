@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
+import '../../../data/services/fuente_de_fotos.dart';
 import '../../../dependencias.dart';
 import '../../../domain/models/auto.dart';
 import '../../../domain/models/pieza.dart';
@@ -8,6 +8,7 @@ import '../../core/aviso.dart';
 import '../../core/colores.dart';
 import '../../core/iconos.dart';
 import '../../core/imagen_guardada.dart';
+import '../view_models/foto_view_model.dart';
 
 /// El formulario con el que el taller publica un repuesto de verdad:
 /// lo que carga acá aparece en el catálogo y en las búsquedas.
@@ -39,21 +40,19 @@ class _PublicarScreenState extends State<PublicarScreen> {
   int? _desde;
   int? _hasta;
   bool _publicando = false;
-  bool _hayCamara = false;
-
-  /// La referencia de la foto ya achicada y guardada. Null si no sacó.
-  String? _foto;
-
-  /// Mientras se achica la foto en el otro isolate. La rueda sigue
-  /// girando sin trabarse: esa es la prueba de que el cálculo no está
-  /// en el hilo de la pantalla.
-  bool _achicando = false;
 
   /// EVENTO DEL SISTEMA: el ciclo de vida de la app. Se registra en
   /// initState y se da de baja en dispose.
   late final AppLifecycleListener _cicloDeVida;
 
   late final String _id = widget.pieza?.id ?? widget.deps.catalogo.proximoId;
+
+  /// La foto: elegirla, achicarla y reemplazarla es cosa de su ViewModel.
+  /// Esta pantalla no sabe que existe la cámara.
+  late final FotoViewModel _foto = widget.deps.nuevaFoto(
+    idPieza: _id,
+    inicial: widget.pieza?.foto,
+  );
 
   bool get _editando => widget.pieza != null;
 
@@ -64,7 +63,7 @@ class _PublicarScreenState extends State<PublicarScreen> {
     super.initState();
     // La lista de autos sale del mismo view model que usa el comprador.
     widget.deps.vehiculos.cargar();
-    _consultarCamara();
+    _foto.consultarCapacidades();
 
     // onHide: la app dejó de verse (entró una llamada, fue a otra app).
     // Es el último aviso seguro, y llega en todas las plataformas: si
@@ -86,7 +85,6 @@ class _PublicarScreenState extends State<PublicarScreen> {
     _descripcion.text = pieza.descripcion;
     _estado = pieza.estado;
     _icono = pieza.icono;
-    _foto = pieza.foto;
     if (pieza.compatibles.isNotEmpty) {
       final primera = pieza.compatibles.first;
       _marca = primera.marca;
@@ -96,17 +94,10 @@ class _PublicarScreenState extends State<PublicarScreen> {
     }
   }
 
-  /// Le pregunta al aparato si tiene cámara. Hay que esperar la
-  /// respuesta: por eso tieneCamara() devuelve un Future.
-  Future<void> _consultarCamara() async {
-    final hay = await widget.deps.capacidades.tieneCamara();
-    if (!mounted) return;
-    setState(() => _hayCamara = hay);
-  }
-
   @override
   void dispose() {
     _cicloDeVida.dispose();
+    _foto.dispose();
     _titulo.dispose();
     _precio.dispose();
     _descripcion.dispose();
@@ -125,14 +116,14 @@ class _PublicarScreenState extends State<PublicarScreen> {
     'modelo': _modelo,
     'desde': _desde,
     'hasta': _hasta,
-    'foto': _foto,
+    'foto': _foto.referencia,
   };
 
   bool get _escribioAlgo =>
       _titulo.text.isNotEmpty ||
       _precio.text.isNotEmpty ||
       _descripcion.text.isNotEmpty ||
-      _foto != null;
+      _foto.referencia != null;
 
   Future<void> _guardarBorrador() async {
     // Editando, lo publicado ya está guardado: el borrador es para lo nuevo.
@@ -156,8 +147,8 @@ class _PublicarScreenState extends State<PublicarScreen> {
       _modelo = guardado['modelo'] as String?;
       _desde = guardado['desde'] as int?;
       _hasta = guardado['hasta'] as int?;
-      _foto = guardado['foto'] as String?;
     });
+    _foto.restaurar(guardado['foto'] as String?);
     avisar(context, 'Seguís donde lo habías dejado');
   }
 
@@ -174,35 +165,8 @@ class _PublicarScreenState extends State<PublicarScreen> {
       _modelo = null;
       _desde = null;
       _hasta = null;
-      _foto = null;
     });
-  }
-
-  // --- La foto ---
-
-  /// Abre la cámara, y la foto que vuelve se achica en otro isolate.
-  Future<void> _sacarFoto() async {
-    final mensajero = ScaffoldMessenger.of(context);
-    try {
-      final imagen = await ImagePicker().pickImage(source: ImageSource.camera);
-      if (imagen == null) return; // cerró la cámara sin sacar
-
-      setState(() => _achicando = true);
-      final original = await imagen.readAsBytes();
-      final referencia = await widget.deps.catalogo.guardarFoto(_id, original);
-
-      if (!mounted) return;
-      setState(() => _foto = referencia);
-    } catch (_) {
-      mensajero.showSnackBar(
-        const SnackBar(
-          content: Text('No se pudo usar la cámara'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    } finally {
-      if (mounted) setState(() => _achicando = false);
-    }
+    _foto.quitar();
   }
 
   List<int> get _anios {
@@ -248,7 +212,7 @@ class _PublicarScreenState extends State<PublicarScreen> {
       estado: _estado,
       taller: widget.deps.sesion.taller!,
       icono: _icono,
-      foto: _foto,
+      foto: _foto.referencia,
       compatibles: [
         Compatibilidad(_marca!, _modelo!, _desde!, _hasta!),
         // Editando, los otros autos para los que ya servía se conservan.
@@ -260,6 +224,8 @@ class _PublicarScreenState extends State<PublicarScreen> {
 
     if (anterior != null) {
       await widget.deps.catalogo.editar(pieza);
+      // Si cambió la foto, la vieja ya no la usa nadie: se borra.
+      await _foto.confirmarGuardado();
     } else {
       await widget.deps.catalogo.publicar(pieza);
       // Ya se publicó: el borrador no sirve más.
@@ -293,7 +259,8 @@ class _PublicarScreenState extends State<PublicarScreen> {
       body: Form(
         key: _formulario,
         child: ListenableBuilder(
-          listenable: vm,
+          // Se redibuja cuando cambian los autos o la foto.
+          listenable: Listenable.merge([vm, _foto]),
           builder: (context, _) => ListView(
             padding: const EdgeInsets.all(20),
             children: [
@@ -358,9 +325,10 @@ class _PublicarScreenState extends State<PublicarScreen> {
               ),
               const SizedBox(height: 18),
 
-              // La cámara es una CAPACIDAD del dispositivo: si no hay,
-              // el botón no se dibuja, en vez de fallar al tocarlo.
-              if (_hayCamara) ...[
+              // La cámara y la galería son CAPACIDADES del dispositivo:
+              // si no hay ninguna, la sección no se dibuja, en vez de
+              // fallar al tocarla.
+              if (_foto.hayDeDonde) ...[
                 const Text(
                   'Foto',
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -495,7 +463,7 @@ class _PublicarScreenState extends State<PublicarScreen> {
               ),
               const SizedBox(height: 24),
               FilledButton.icon(
-                onPressed: _publicando || _achicando ? null : _publicar,
+                onPressed: _publicando || _foto.cargando ? null : _publicar,
                 icon: Icon(_editando ? Icons.save : Icons.publish),
                 label: Text(
                   _publicando
@@ -511,57 +479,67 @@ class _PublicarScreenState extends State<PublicarScreen> {
   }
 
   Widget _vistaFoto() {
-    if (_achicando) {
+    if (_foto.cargando) {
       return Container(
         height: 180,
         decoration: BoxDecoration(
           color: azulClaro,
           borderRadius: BorderRadius.circular(10),
         ),
+        // Mientras se achica la foto en el otro isolate, la rueda sigue
+        // girando sin trabarse: el cálculo no está en el hilo de la
+        // pantalla.
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 12),
-            Text('Achicando la foto...'),
+            Text('Preparando la foto...'),
           ],
         ),
       );
     }
 
-    final foto = _foto;
-    if (foto == null) {
-      return OutlinedButton.icon(
-        onPressed: _sacarFoto,
-        icon: const Icon(Icons.photo_camera),
-        label: const Text('Sacar una foto del repuesto'),
-        style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(46)),
-      );
-    }
-
+    final error = _foto.error;
+    final foto = _foto.referencia;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: SizedBox(
-            height: 180,
-            width: double.infinity,
-            child: imagenGuardada(context, foto),
+        if (foto != null)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SizedBox(
+              height: 180,
+              width: double.infinity,
+              child: imagenGuardada(context, foto),
+            ),
           ),
-        ),
-        Row(
+        if (error != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Text(error, style: const TextStyle(color: Colors.red)),
+          ),
+        Wrap(
+          spacing: 8,
           children: [
-            TextButton.icon(
-              onPressed: _sacarFoto,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Sacar otra'),
-            ),
-            const Spacer(),
-            TextButton.icon(
-              onPressed: () => setState(() => _foto = null),
-              icon: const Icon(Icons.close),
-              label: const Text('Sin foto'),
-            ),
+            if (_foto.puedeUsarCamara)
+              TextButton.icon(
+                onPressed: () => _foto.elegir(OrigenDeFoto.camara),
+                icon: const Icon(Icons.photo_camera),
+                label: Text(foto == null ? 'Sacar una foto' : 'Sacar otra'),
+              ),
+            if (_foto.puedeUsarGaleria)
+              TextButton.icon(
+                onPressed: () => _foto.elegir(OrigenDeFoto.galeria),
+                icon: const Icon(Icons.photo_library_outlined),
+                label: const Text('Elegir de la galería'),
+              ),
+            if (foto != null)
+              TextButton.icon(
+                onPressed: _foto.quitar,
+                icon: const Icon(Icons.close),
+                label: const Text('Sin foto'),
+              ),
           ],
         ),
       ],

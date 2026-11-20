@@ -22,6 +22,15 @@ class FotosLocales {
   Future<String> guardar(String id, Uint8List bytes) =>
       lugar.guardarFoto(id, bytes);
 
+  /// Borra una foto que ya no usa nadie (se reemplazó por otra). Así no
+  /// quedan archivos huérfanos ocupando lugar en el teléfono.
+  Future<void> borrar(String referencia) async {
+    if (referencia.startsWith('data:') || referencia.startsWith('http')) {
+      return; // no es un archivo de este teléfono
+    }
+    await lugar.borrarFoto(referencia);
+  }
+
   /// La foto como texto, para mandarla al servidor adentro de la pieza
   /// (los otros teléfonos no tienen el archivo de este). Si ya es texto
   /// o una dirección, queda igual; si no hay foto, null.

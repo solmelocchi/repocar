@@ -8,3 +8,6 @@ Future<String> guardarFoto(String id, Uint8List bytes) async =>
 
 /// En el navegador las fotos ya son texto: no hay archivos que leer.
 Future<String?> leerComoTexto(String referencia) async => null;
+
+/// En el navegador no hay archivos que borrar.
+Future<void> borrarFoto(String referencia) async {}

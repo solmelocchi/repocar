@@ -30,6 +30,15 @@ class Capacidades {
     }
   }
 
+  /// Si se puede elegir una foto que ya está en el teléfono.
+  Future<bool> tieneGaleria() async {
+    try {
+      return ImagePicker().supportsImageSource(ImageSource.gallery);
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Si la plataforma sabe mostrar notificaciones: el celular y el
   /// navegador sí; la versión de escritorio de este proyecto, no.
   Future<bool> puedeNotificar() async =>

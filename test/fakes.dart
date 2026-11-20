@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:repocar/data/repositories/vehiculos_repository.dart';
 import 'package:repocar/data/services/autenticacion_service.dart';
+import 'package:repocar/data/services/fuente_de_fotos.dart';
 import 'package:repocar/data/services/notificaciones_service.dart';
 import 'package:repocar/domain/models/auto.dart';
 import 'package:repocar/domain/models/envio.dart';
@@ -70,6 +71,9 @@ class SinNotificaciones implements Capacidades {
 
   @override
   Future<bool> tieneCamara() async => true;
+
+  @override
+  Future<bool> tieneGaleria() async => true;
 
   @override
   bool get correTareasDeFondo => false;
@@ -185,4 +189,23 @@ class AutenticacionFalsa implements AutenticacionService {
 
   @override
   Future<void> salir() async => conectado = null;
+}
+
+/// La cámara de mentira: devuelve, en orden, lo que le cargamos. Una
+/// [Foto], null (el usuario canceló) o un [ErrorDeFoto] (falló).
+class FuenteFalsa implements FuenteDeFotos {
+  FuenteFalsa(this._respuestas);
+
+  final List<Object?> _respuestas;
+
+  /// Cuántas veces se abrió la cámara.
+  int veces = 0;
+
+  @override
+  Future<Foto?> elegir(OrigenDeFoto origen) async {
+    final respuesta = _respuestas[veces++];
+    await Future<void>.delayed(Duration.zero); // como la de verdad: tarda
+    if (respuesta is ErrorDeFoto) throw respuesta;
+    return respuesta as Foto?;
+  }
 }

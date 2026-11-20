@@ -30,3 +30,13 @@ Future<String?> leerComoTexto(String ruta) async {
     return null;
   }
 }
+
+/// Borra el archivo, si todavía está.
+Future<void> borrarFoto(String ruta) async {
+  try {
+    final archivo = File(ruta);
+    if (await archivo.exists()) await archivo.delete();
+  } catch (_) {
+    // Si no se puede borrar, queda ocupando lugar: no rompe nada.
+  }
+}

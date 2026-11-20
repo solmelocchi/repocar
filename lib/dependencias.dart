@@ -12,6 +12,7 @@ import 'data/repositories/push_repository.dart';
 import 'data/repositories/vehiculos_repository.dart';
 import 'data/services/catalogo_service.dart';
 import 'data/services/configuracion_service.dart';
+import 'data/services/fuente_de_fotos.dart';
 import 'data/services/cuentas_service.dart';
 import 'data/services/autenticacion_service.dart';
 import 'data/services/notificaciones_service.dart';
@@ -30,6 +31,7 @@ import 'ui/ingreso/view_models/sesion_view_model.dart';
 import 'ui/notificaciones/view_models/notificaciones_view_model.dart';
 import 'ui/pedidos/view_models/pedidos_view_model.dart';
 import 'ui/sistema/view_models/conexion_view_model.dart';
+import 'ui/taller/view_models/foto_view_model.dart';
 
 // =====================================================================
 // ENSAMBLADO DE LAS CAPAS, de abajo hacia arriba:
@@ -57,6 +59,7 @@ class Dependencias {
     required this.capacidades,
     required this.segundoPlano,
     required this.almacen,
+    required this.nuevaFoto,
   });
 
   final VehiculosViewModel vehiculos;
@@ -79,6 +82,12 @@ class Dependencias {
   /// La base local que quedó elegida para esta plataforma.
   final AlmacenLocal almacen;
 
+  /// Cada pantalla de publicar tiene su propio ViewModel de la foto (con
+  /// el id de la pieza y la foto que ya tenía). Esta función lo arma con
+  /// lo que hace falta, sin que la pantalla conozca la cámara.
+  final FotoViewModel Function({required String idPieza, String? inicial})
+  nuevaFoto;
+
   /// En qué pestaña de la barra de abajo está el comprador. Vive acá
   /// para que otra pantalla (el pedido confirmado) lo pueda llevar a una.
   final pestanaComprador = ValueNotifier<int>(0);
@@ -94,6 +103,7 @@ class Dependencias {
     SegundoPlano? segundoPlano,
     PushService? push,
     TokensPush? tokensPush,
+    FuenteDeFotos? fuenteDeFotos,
   }) {
     // 0. La base: de dónde salen y a dónde van los datos que tienen que
     //    sobrevivir a cerrar la app. main() pasa la que tiene SERVIDOR
@@ -112,6 +122,7 @@ class Dependencias {
     final avisosDelSistema =
         notificacionesService ?? NotificacionesDelSistema();
     const capacidades = Capacidades();
+    final fotos = fuenteDeFotos ?? FuenteImagePicker();
     final fondo = segundoPlano ?? SegundoPlano(capacidades: capacidades);
 
     // 2. Repositorios y políticas
@@ -203,6 +214,13 @@ class Dependencias {
       capacidades: capacidades,
       segundoPlano: fondo,
       almacen: base,
+      nuevaFoto: ({required String idPieza, String? inicial}) => FotoViewModel(
+        fuente: fotos,
+        repositorio: catalogoRepo,
+        capacidades: capacidades,
+        idPieza: idPieza,
+        inicial: inicial,
+      ),
     );
   }
 
