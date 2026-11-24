@@ -53,24 +53,45 @@ class ComisionDelTaller extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: deps.comisiones,
+      // El texto arriba y el botón abajo: el botón ocupa todo el ancho
+      // (así son en esta app) y al costado no le dejaba lugar al texto.
       builder: (context, _) => Card(
         color: azulClaro,
         margin: const EdgeInsets.only(bottom: 12),
-        child: ListTile(
-          leading: const Icon(Icons.percent, color: azul),
-          title: Text(
-            textoDeComision(taller),
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          subtitle: const Text(
-            'Los pedidos que ya se hicieron conservan la suya.',
-            style: TextStyle(fontSize: 12),
-          ),
-          trailing: FilledButton(
-            onPressed: deps.comisiones.guardando
-                ? null
-                : () => _cambiar(context),
-            child: const Text('Cambiar'),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.percent, color: azul),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          textoDeComision(taller),
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        const Text(
+                          'Los pedidos que ya se hicieron conservan la suya.',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              FilledButton(
+                onPressed: deps.comisiones.guardando
+                    ? null
+                    : () => _cambiar(context),
+                child: const Text('Cambiar la comisión'),
+              ),
+            ],
           ),
         ),
       ),
@@ -146,7 +167,11 @@ class _DialogoComisionState extends State<_DialogoComision> {
           onPressed: () => Navigator.pop(context),
           child: const Text('Cancelar'),
         ),
-        FilledButton(onPressed: _aceptar, child: const Text('Guardar')),
+        FilledButton(
+          onPressed: _aceptar,
+          style: FilledButton.styleFrom(minimumSize: const Size(110, 44)),
+          child: const Text('Guardar'),
+        ),
       ],
     );
   }

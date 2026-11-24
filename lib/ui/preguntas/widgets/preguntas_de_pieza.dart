@@ -279,6 +279,7 @@ Future<String?> pedirRespuesta(BuildContext context, Pregunta pregunta) {
         ),
         FilledButton(
           onPressed: () => Navigator.pop(dialogo, texto.text),
+          style: FilledButton.styleFrom(minimumSize: const Size(110, 44)),
           child: const Text('Responder'),
         ),
       ],

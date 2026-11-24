@@ -253,6 +253,9 @@ class DetallePedidoScreen extends StatelessWidget {
 
   Widget _contraparte(BuildContext context) => comoAdmin
       ? Column(
+          // A todo el ancho, como las demás secciones (centrado quedaba
+          // angosto).
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _seccion('Comprador', [Text(pedido.cliente)]),
             const SizedBox(height: 12),
@@ -466,7 +469,10 @@ class DetallePedidoScreen extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogo, true),
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.red,
+              minimumSize: const Size(110, 44),
+            ),
             child: const Text('Sí, me arrepiento'),
           ),
         ],

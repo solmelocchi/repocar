@@ -111,9 +111,14 @@ void main() {
     expect(find.text('Comisión a cobrar'), findsOneWidget);
     expect(find.text('Por taller'), findsOneWidget);
 
-    // Tocar un taller muestra sus pedidos.
+    // Tocar un taller muestra sus pedidos y su comisión, legible: el
+    // texto tiene ancho de verdad (con el botón al costado quedaba de una
+    // letra por renglón).
     await tester.tap(find.byType(ListTile).first);
     await tester.pumpAndSettle();
+    expect(find.text('Cambiar la comisión'), findsOneWidget);
+    final comision = find.textContaining(RegExp(r'^Comisión \d+%$'));
+    expect(tester.getSize(comision).width, greaterThan(60));
     await tester.pageBack();
     await tester.pumpAndSettle();
 
@@ -131,5 +136,16 @@ void main() {
     await tester.tap(find.byType(ListTile).first);
     await tester.pumpAndSettle();
     expect(find.text('Reparto de la plata'), findsOneWidget);
+
+    // El cuadro del comprador ocupa todo el ancho (centrado quedaba angosto).
+    await tester.scrollUntilVisible(
+      find.text('Comprador'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    final comprador = find
+        .ancestor(of: find.text('Comprador'), matching: find.byType(Card))
+        .first;
+    expect(tester.getSize(comprador).width, greaterThan(300));
   });
 }
