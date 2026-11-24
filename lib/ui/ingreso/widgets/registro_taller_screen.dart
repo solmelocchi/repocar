@@ -143,7 +143,7 @@ class _RegistroTallerScreenState extends State<RegistroTallerScreen> {
               controller: _telefono,
               keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
-                labelText: 'WhatsApp del taller',
+                labelText: 'Teléfono del taller',
                 hintText: '+54 9 260 411-2233',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.chat),

@@ -26,6 +26,7 @@ import 'domain/models/pieza.dart';
 import 'plataforma/capacidades.dart';
 import 'plataforma/conectividad.dart';
 import 'plataforma/segundo_plano.dart';
+import 'ui/admin/view_models/control_de_preguntas_view_model.dart';
 import 'ui/busqueda/view_models/vehiculos_view_model.dart';
 import 'ui/carrito/view_models/carrito_view_model.dart';
 import 'ui/catalogo/view_models/catalogo_view_model.dart';
@@ -67,6 +68,7 @@ class Dependencias {
     required this.nuevaFoto,
     required this.misPreguntas,
     required this.nuevasPreguntas,
+    required this.controlDePreguntas,
   });
 
   final VehiculosViewModel vehiculos;
@@ -101,6 +103,10 @@ class Dependencias {
 
   /// Cada ficha abierta tiene su propio ViewModel de preguntas.
   final PreguntasViewModel Function(Pieza pieza) nuevasPreguntas;
+
+  /// El control de TalleresYa: todas las preguntas y las publicaciones
+  /// para revisar. Lo usa el panel de administración.
+  final ControlDePreguntasViewModel controlDePreguntas;
 
   /// En qué pestaña de la barra de abajo está el comprador. Vive acá
   /// para que otra pantalla (el pedido confirmado) lo pueda llevar a una.
@@ -257,6 +263,10 @@ class Dependencias {
         inicial: inicial,
       ),
       misPreguntas: misPreguntas,
+      controlDePreguntas: ControlDePreguntasViewModel(
+        repositorio: preguntasRepo,
+        buscarPieza: catalogo.buscarPorId,
+      ),
       nuevasPreguntas: (pieza) => PreguntasViewModel(
         repositorio: preguntasRepo,
         pieza: pieza,

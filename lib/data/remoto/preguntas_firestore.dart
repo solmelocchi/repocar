@@ -45,6 +45,9 @@ class PreguntasFirestore implements PreguntasService {
   }
 
   @override
+  Stream<List<Map<String, dynamic>>> todas() => _escuchar(_preguntas);
+
+  @override
   Future<void> crear(Map<String, dynamic> pregunta) => _preguntas
       .doc(pregunta['id'] as String)
       .set({...pregunta, 'autor_uid': _uid})

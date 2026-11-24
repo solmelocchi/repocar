@@ -14,7 +14,7 @@ El grupo defiende este código en un examen oral. Por eso cada decisión tiene q
 | Califica solo quien compró y recibió; el taller responde | `Pedido.sePuedeCalificar`; `DialogoResponder` |
 | Panel de administración con ventas y comisión | Cuenta `admin@talleresya.com`, `ui/admin/` |
 | Consultas del comprador **adentro de la app** (Ramallo no quiere que la venta se vaya a WhatsApp) | Preguntas y respuestas en la publicación: `ui/preguntas/`, `PreguntasRepository`; no se pueden pasar teléfonos ni mails (`tieneDatosDeContacto`) |
-| Coordinar la entrega después de comprar | WhatsApp, recién en el detalle del pedido: `plataforma/whatsapp.dart` |
+| Que Ramallo pueda controlar que las ventas queden en la app | Sin WhatsApp ni teléfono del taller a la vista. En el panel: todas las preguntas y las publicaciones para revisar (`ui/admin/`, `domain/control_de_ventas.dart`) |
 | Android primero, sin cerrarle la puerta a iPhone | Flutter: el mismo código compila para iOS |
 | El taller se entera de cada pedido | Notificaciones locales, push (FCM) y WorkManager |
 
@@ -29,7 +29,7 @@ lib/
   data/repositories/      fuente de verdad y reglas; traducen datos crudos a modelos
   data/local/             SQLite, preferencias, almacenamiento seguro
   data/remoto/            Firebase: AlmacenConServidor decora a la base local
-  plataforma/             lo del sistema: capacidades, conectividad, WorkManager, WhatsApp
+  plataforma/             lo del sistema: capacidades, conectividad, WorkManager
   ui/<tema>/view_models/  ChangeNotifier con EstadoCarga (cargando, exito, error)
   ui/<tema>/widgets/      pantallas; escuchan con ListenableBuilder
   dependencias.dart       arma las capas de abajo hacia arriba y las baja por constructor

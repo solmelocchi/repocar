@@ -67,10 +67,5 @@
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE"/>
         </intent>
-        <!-- RepoCar: abrir WhatsApp con un enlace https://wa.me/... -->
-        <intent>
-            <action android:name="android.intent.action.VIEW"/>
-            <data android:scheme="https"/>
-        </intent>
     </queries>
 </manifest>

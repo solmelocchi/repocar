@@ -170,8 +170,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          'El cobro por la app está apagado. Coordiná el '
-                          'pago con el taller por WhatsApp.',
+                          'El cobro por la app está apagado. Le pagás al '
+                          'taller cuando retirás o recibís el pedido.',
                           style: TextStyle(fontSize: 13, color: ambar),
                         ),
                       ),

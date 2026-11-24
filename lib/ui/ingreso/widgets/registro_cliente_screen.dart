@@ -113,7 +113,7 @@ class _RegistroClienteScreenState extends State<RegistroClienteScreen> {
               controller: _telefono,
               keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
-                labelText: 'WhatsApp',
+                labelText: 'Teléfono',
                 hintText: '+54 9 260 400-1122',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.chat),

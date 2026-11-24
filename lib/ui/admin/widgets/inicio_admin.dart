@@ -9,6 +9,7 @@ import '../../core/formato.dart';
 import '../../core/vistas_de_carga.dart';
 import '../../cuenta/widgets/cuenta_screen.dart';
 import '../../pedidos/widgets/detalle_pedido_screen.dart';
+import 'control_de_preguntas.dart';
 
 /// El panel de TalleresYa (el que pidió el cliente): cuánto vendió cada
 /// taller y cuánta comisión le toca cobrar. Solo lo ve la cuenta de
@@ -30,6 +31,10 @@ class _InicioAdminState extends State<InicioAdmin> {
   void initState() {
     super.initState();
     widget.deps.pedidos.cargar();
+    // Para el control de preguntas: las piezas (también las pausadas y
+    // borradas) y todas las preguntas.
+    widget.deps.catalogo.cargar();
+    widget.deps.controlDePreguntas.iniciar();
   }
 
   @override
@@ -184,6 +189,7 @@ class _Resumen extends StatelessWidget {
                       ),
                     ),
                   ),
+                ControlDePreguntas(deps: deps),
               ],
             ),
           );

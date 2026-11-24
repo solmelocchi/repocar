@@ -96,9 +96,6 @@ class _PreguntasDePiezaState extends State<PreguntasDePieza> {
                   hintText:
                       widget.sugerencia ??
                       '¿Le sirve a mi auto? ¿Está probada?',
-                  helperText:
-                      'No pongas teléfonos ni mails: la compra se hace por '
-                      'RepoCar.',
                   errorText: _vm.error,
                   border: const OutlineInputBorder(),
                 ),
@@ -269,7 +266,7 @@ Future<String?> pedirRespuesta(BuildContext context, Pregunta pregunta) {
             minLines: 2,
             maxLines: 4,
             decoration: const InputDecoration(
-              hintText: 'Tu respuesta (sin teléfonos ni mails)',
+              hintText: 'Tu respuesta',
               border: OutlineInputBorder(),
             ),
           ),

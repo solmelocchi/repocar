@@ -17,7 +17,7 @@ La evaluación pregunta por los requerimientos: qué quería el cliente, qué pr
 ## Cómo buscar
 
 - La tabla de requerimientos está en `CLAUDE.md`. Empezá por ahí.
-- Para ubicar el código, buscá una palabra clave, no una ruta. Por ejemplo: `aLaVenta`, `PiezaNoDisponible`, `comision`, `MetodoEntrega`, `sePuedeCalificar`, `abrirWhatsApp`, `idDeEstado`.
+- Para ubicar el código, buscá una palabra clave, no una ruta. Por ejemplo: `aLaVenta`, `PiezaNoDisponible`, `comision`, `MetodoEntrega`, `sePuedeCalificar`, `tieneDatosDeContacto`, `esSenalDeVentaPorFuera`, `idDeEstado`.
 - Seguí el camino con "buscar referencias" desde el servicio hacia arriba hasta la pantalla.
 
 ## Ejemplo

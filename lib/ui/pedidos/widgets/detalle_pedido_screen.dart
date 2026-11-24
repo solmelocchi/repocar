@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../dependencias.dart';
 import '../../../domain/models/envio.dart';
 import '../../../domain/models/pedido.dart';
-import '../../../plataforma/whatsapp.dart';
 import '../../catalogo/widgets/detalle_screen.dart';
 import '../../catalogo/widgets/foto_pieza.dart';
 import '../../core/colores.dart';
@@ -284,21 +283,15 @@ class DetallePedidoScreen extends StatelessWidget {
                 pedido.taller.nombre,
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
+              // Sin el teléfono: todo se hace por RepoCar.
               Text(
-                '${pedido.taller.zona} · ${pedido.taller.telefono}',
+                pedido.taller.zona,
                 style: const TextStyle(fontSize: 12, color: Colors.black54),
               ),
             ],
           ),
         ),
       ],
-    ),
-    const SizedBox(height: 10),
-    OutlinedButton.icon(
-      onPressed: () => _escribirAlTaller(context),
-      icon: const Icon(Icons.chat),
-      label: const Text('Escribirle por WhatsApp'),
-      style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(44)),
     ),
   ]);
 
@@ -411,21 +404,4 @@ class DetallePedidoScreen extends StatelessWidget {
       ],
     ),
   );
-
-  Future<void> _escribirAlTaller(BuildContext context) async {
-    final mensajero = ScaffoldMessenger.of(context);
-    final abrio = await abrirWhatsApp(
-      pedido.taller.telefono,
-      'Hola! Te escribo por mi pedido ${pedido.numero} en RepoCar '
-      '(${pedido.detalle}).',
-    );
-    if (!abrio) {
-      mensajero.showSnackBar(
-        const SnackBar(
-          content: Text('No se pudo abrir WhatsApp en este teléfono'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
-  }
 }

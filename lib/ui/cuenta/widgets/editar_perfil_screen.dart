@@ -75,7 +75,7 @@ class _EditarPerfilScreenState extends State<EditarPerfilScreen> {
               controller: _telefono,
               keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
-                labelText: 'Teléfono (con WhatsApp)',
+                labelText: 'Teléfono',
                 hintText: '+54 9 261 123-4567',
                 prefixIcon: Icon(Icons.phone),
                 border: OutlineInputBorder(),

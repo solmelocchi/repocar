@@ -35,6 +35,8 @@ class PreguntasRepository {
 
   Stream<List<Pregunta>> mias() => _servicio.mias().map(_armar);
 
+  Stream<List<Pregunta>> todas() => _servicio.todas().map(_armar);
+
   static List<Pregunta> _armar(List<Map<String, dynamic>> crudas) {
     final preguntas = <Pregunta>[];
     for (final cruda in crudas) {

@@ -34,7 +34,7 @@ MVVM en capas. Todo se arma en `lib/dependencias.dart` y baja por constructor (n
 | `lib/data/repositories/` | La fuente de verdad y las reglas de cada tema |
 | `lib/data/local/` | Base SQLite, preferencias y almacenamiento seguro |
 | `lib/data/remoto/` | Firebase: Firestore (con copia sin conexión), Authentication y tokens de push |
-| `lib/plataforma/` | Lo del sistema: capacidades, conectividad, WorkManager y WhatsApp |
+| `lib/plataforma/` | Lo del sistema: capacidades, conectividad y WorkManager |
 | `lib/ui/<tema>/view_models/` | El estado de cada pantalla (`ChangeNotifier`) |
 | `lib/ui/<tema>/widgets/` | Las pantallas |
 | `firestore.rules` | Las reglas de seguridad de la base |

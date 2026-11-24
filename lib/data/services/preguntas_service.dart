@@ -21,6 +21,9 @@ abstract class PreguntasService {
   /// respondan).
   Stream<List<Map<String, dynamic>>> mias();
 
+  /// Todas (para el control de TalleresYa).
+  Stream<List<Map<String, dynamic>>> todas();
+
   Future<void> crear(Map<String, dynamic> pregunta);
 
   Future<void> responder(
@@ -77,6 +80,9 @@ class PreguntasEnMemoria implements PreguntasService {
     final yo = quienSoy;
     return _donde((p) => p['autor_uid'] == yo);
   }
+
+  @override
+  Stream<List<Map<String, dynamic>>> todas() => _donde((_) => true);
 
   @override
   Future<void> crear(Map<String, dynamic> pregunta) async {
