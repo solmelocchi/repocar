@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as ruta;
 import 'package:sqflite/sqflite.dart';
 
@@ -10,7 +10,12 @@ import 'almacen_preferencias.dart';
 /// SQLite en el celular. En una computadora (Windows, Linux, Mac) el
 /// plugin de sqflite no existe, así que ahí se usa el mismo almacén
 /// que en el navegador: la app anda igual y no explota.
-AlmacenLocal crearAlmacen() => (Platform.isAndroid || Platform.isIOS)
+///
+/// Se pregunta con defaultTargetPlatform, como en el resto de la app, y
+/// no con Platform (de dart:io), que no existe en la web.
+AlmacenLocal crearAlmacen() =>
+    (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS)
     ? AlmacenSqlite()
     : AlmacenPreferencias();
 

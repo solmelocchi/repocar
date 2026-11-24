@@ -13,6 +13,19 @@ class ConfiguracionLenta implements ConfiguracionService {
   }
 }
 
+/// Un servidor que contesta enseguida, pero con un error.
+class ConfiguracionConError implements ConfiguracionService {
+  @override
+  Future<Map<String, dynamic>> obtenerConfiguracion() async =>
+      throw Exception('error 500 del servidor');
+}
+
+/// Un servidor que contesta, pero sin el dato que esperamos.
+class ConfiguracionIncompleta implements ConfiguracionService {
+  @override
+  Future<Map<String, dynamic>> obtenerConfiguracion() async => const {};
+}
+
 void main() {
   group('Cuando el servidor contesta a tiempo', () {
     final politicas = PoliticasRemotas(const ConfiguracionService());
@@ -38,6 +51,20 @@ void main() {
     });
 
     test('el pago queda apagado, que es la opción segura', () async {
+      expect(await politicas.pagoHabilitado(), isFalse);
+    });
+  });
+
+  group('Cuando el servidor contesta, pero mal', () {
+    test('con un error: comisión por defecto y pago apagado', () async {
+      final politicas = PoliticasRemotas(ConfiguracionConError());
+      expect(await politicas.comisionPorDefecto(), 0.10);
+      expect(await politicas.pagoHabilitado(), isFalse);
+    });
+
+    test('sin el dato: comisión por defecto y pago apagado', () async {
+      final politicas = PoliticasRemotas(ConfiguracionIncompleta());
+      expect(await politicas.comisionPorDefecto(), 0.10);
       expect(await politicas.pagoHabilitado(), isFalse);
     });
   });

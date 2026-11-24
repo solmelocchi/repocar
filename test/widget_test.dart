@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:repocar/data/local/almacen_memoria.dart';
+
 import 'package:repocar/dependencias.dart';
 import 'package:repocar/main.dart';
 
@@ -12,6 +14,8 @@ void main() {
     // Lo que toca el sistema operativo va con falsos: en una prueba no
     // hay teléfono, ni red, ni WorkManager.
     final deps = Dependencias.crear(
+      // Base en memoria: la prueba no depende de en qué compu corre.
+      almacen: AlmacenEnMemoria(),
       notificacionesService: NotificacionesFalsas(),
       conectividad: ConectividadFalsa(),
       segundoPlano: SegundoPlanoFalso(),
@@ -29,6 +33,8 @@ void main() {
   ) async {
     final red = ConectividadFalsa(ahora: false);
     final deps = Dependencias.crear(
+      // Base en memoria: la prueba no depende de en qué compu corre.
+      almacen: AlmacenEnMemoria(),
       notificacionesService: NotificacionesFalsas(),
       conectividad: red,
       segundoPlano: SegundoPlanoFalso(),

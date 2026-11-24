@@ -7,7 +7,8 @@ import 'services/configuracion_service.dart';
 //
 // La idea es la del apunte: si el servidor no contesta a tiempo, no se
 // cuelga la app ni se muestra un error. Se aplica la POLÍTICA POR
-// DEFECTO, que siempre es la opción más segura.
+// DEFECTO, que siempre es la opción más segura. Lo mismo si contesta,
+// pero con un error o con un dato que no sirve.
 // =====================================================================
 class PoliticasRemotas {
   PoliticasRemotas(this._servicio, {this.limite = const Duration(seconds: 3)});
@@ -28,7 +29,9 @@ class PoliticasRemotas {
       final config = await _servicio.obtenerConfiguracion().timeout(limite);
       return (config['comision_default'] as num).toDouble();
     } on TimeoutException {
-      return 0.10; // política por defecto
+      return 0.10; // no contestó a tiempo: política por defecto
+    } catch (_) {
+      return 0.10; // contestó con un error o un dato raro: lo mismo
     }
   }
 
@@ -42,6 +45,8 @@ class PoliticasRemotas {
       return config['pagos_habilitados'] == true;
     } on TimeoutException {
       return false; // política por defecto: la opción segura
+    } catch (_) {
+      return false; // contestó con un error: también la opción segura
     }
   }
 }

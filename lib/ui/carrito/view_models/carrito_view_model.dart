@@ -98,16 +98,27 @@ class CarritoViewModel extends ChangeNotifier {
   List<ItemCarrito> itemsDeTaller(String cuit) =>
       _items.where((item) => item.pieza.taller.cuit == cuit).toList();
 
+  /// Las tarifas de envío por zona. Si no se pueden traer, la lista
+  /// queda vacía (el checkout ofrece retiro o cadete) y la pantalla se
+  /// entera igual: el aviso va en el finally.
   Future<void> cargarZonas() async {
     if (_zonas.isNotEmpty) return;
-    _zonas = await _vehiculos.obtenerZonas();
-    notifyListeners();
+    try {
+      _zonas = await _vehiculos.obtenerZonas();
+    } catch (_) {
+      _zonas = [];
+    } finally {
+      notifyListeners();
+    }
   }
 
   /// Le pregunta al servidor si se puede cobrar dentro de la app.
   Future<void> cargarPoliticas() async {
-    _pagoHabilitado = await _politicas.pagoHabilitado();
-    notifyListeners();
+    try {
+      _pagoHabilitado = await _politicas.pagoHabilitado();
+    } finally {
+      notifyListeners();
+    }
   }
 
   /// Si la pieza ya está en el carrito.

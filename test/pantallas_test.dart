@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:repocar/data/local/almacen_memoria.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:repocar/dependencias.dart';
@@ -18,6 +20,8 @@ import 'fakes.dart';
 Future<Dependencias> armar() async {
   SharedPreferences.setMockInitialValues({});
   return Dependencias.crear(
+    // Base en memoria: la prueba no depende de en qué compu corre.
+    almacen: AlmacenEnMemoria(),
     notificacionesService: NotificacionesFalsas(),
     conectividad: ConectividadFalsa(),
     segundoPlano: SegundoPlanoFalso(),
