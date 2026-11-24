@@ -5,6 +5,7 @@ import '../../../domain/models/envio.dart';
 import '../../../domain/models/pedido.dart';
 import '../../catalogo/widgets/detalle_screen.dart';
 import '../../catalogo/widgets/foto_pieza.dart';
+import '../../core/aviso.dart';
 import '../../core/colores.dart';
 import '../../core/formato.dart';
 import '../../taller/widgets/tarjeta_pedido_taller.dart';
@@ -330,9 +331,12 @@ class DetallePedidoScreen extends StatelessWidget {
   List<Widget> _acciones(BuildContext context) {
     // TalleresYa mira, no toca: los cambios los hacen el taller y el
     // comprador.
-    if (comoAdmin) return const [];
+    if (comoAdmin) {
+      return [if (pedido.arrepentido) _avisoDeArrepentimiento()];
+    }
     if (comoTaller) {
       return [
+        if (pedido.arrepentido) _avisoDeArrepentimiento(),
         if (pedido.estado != EstadoPedido.entregado)
           FilledButton(
             onPressed: () => deps.pedidos.cambiarEstado(
@@ -378,7 +382,103 @@ class DetallePedidoScreen extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 12, color: Colors.black45),
         ),
+      const SizedBox(height: 16),
+      _arrepentimiento(context),
     ];
+  }
+
+  /// Para el taller y para TalleresYa: el comprador se arrepintió.
+  Widget _avisoDeArrepentimiento() => Card(
+    color: const Color(0xFFFFEBEE),
+    child: Padding(
+      padding: const EdgeInsets.all(12),
+      child: Text(
+        'El comprador usó el botón de arrepentimiento el '
+        '${fechaCorta(pedido.arrepentidoEl!)}. El taller coordina la '
+        'devolución (Ley 24.240).',
+        style: const TextStyle(fontSize: 13),
+      ),
+    ),
+  );
+
+  /// El BOTÓN DE ARREPENTIMIENTO (obligatorio en las ventas por internet,
+  /// Resolución 424/2020): sin dar explicaciones, dentro de los 10 días
+  /// desde que recibe la compra.
+  Widget _arrepentimiento(BuildContext context) {
+    final cuando = pedido.arrepentidoEl;
+    if (cuando != null) {
+      return Card(
+        color: const Color(0xFFFFEBEE),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Text(
+            'Te arrepentiste de esta compra el ${fechaCorta(cuando)}. Le '
+            'avisamos al taller para coordinar la devolución.',
+            style: const TextStyle(fontSize: 13),
+          ),
+        ),
+      );
+    }
+    if (!pedido.puedeArrepentirse(DateTime.now())) {
+      return const Text(
+        'Ya pasaron los 10 días para arrepentirte de esta compra.',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 12, color: Colors.black45),
+      );
+    }
+    final limite = pedido.limiteParaArrepentirse;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        OutlinedButton.icon(
+          onPressed: () => _confirmarArrepentimiento(context),
+          style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+          icon: const Icon(Icons.undo),
+          label: const Text('Botón de arrepentimiento'),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          limite == null
+              ? 'Podés arrepentirte sin dar explicaciones: tenés 10 días '
+                    'desde que lo recibís (Ley 24.240).'
+              : 'Podés arrepentirte sin dar explicaciones hasta el '
+                    '${fechaCorta(limite)} (Ley 24.240).',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 12, color: Colors.black45),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _confirmarArrepentimiento(BuildContext context) async {
+    final seguro = await showDialog<bool>(
+      context: context,
+      builder: (dialogo) => AlertDialog(
+        title: const Text('¿Te arrepentís de la compra?'),
+        content: const Text(
+          'Le avisamos al taller para que coordine la devolución con vos. '
+          'No hace falta dar explicaciones.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogo, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogo, true),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Sí, me arrepiento'),
+          ),
+        ],
+      ),
+    );
+    if (seguro != true || !context.mounted) return;
+    final listo = await deps.pedidos.arrepentirse(pedido);
+    if (!context.mounted) return;
+    avisar(
+      context,
+      listo ? 'Listo: le avisamos al taller' : 'Ya pasó el plazo de 10 días',
+    );
   }
 
   Widget _linea(String texto, String valor, {bool fuerte = false}) => Padding(

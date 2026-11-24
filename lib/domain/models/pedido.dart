@@ -65,6 +65,13 @@ class Pedido {
   EstadoPedido estado;
   Calificacion? calificacion;
 
+  /// Cuándo el taller lo marcó como entregado. Desde ahí corren los 10
+  /// días para arrepentirse.
+  DateTime? entregadoEl;
+
+  /// Cuándo el comprador usó el botón de arrepentimiento (null si no).
+  DateTime? arrepentidoEl;
+
   Pedido({
     required this.numero,
     required this.fecha,
@@ -77,6 +84,8 @@ class Pedido {
     this.costoEnvio = 0,
     this.estado = EstadoPedido.pagado,
     this.calificacion,
+    this.entregadoEl,
+    this.arrepentidoEl,
   });
 
   /// Lo que valen las piezas, sin el envío.
@@ -96,6 +105,27 @@ class Pedido {
 
   bool get sePuedeCalificar =>
       estado == EstadoPedido.entregado && calificacion == null;
+
+  bool get arrepentido => arrepentidoEl != null;
+
+  /// Desde cuándo corren los 10 días: la entrega. Los pedidos viejos, que
+  /// no la guardaban, cuentan desde la compra.
+  DateTime? get _recibido =>
+      entregadoEl ?? (estado == EstadoPedido.entregado ? fecha : null);
+
+  /// Hasta cuándo puede arrepentirse (null si todavía no lo recibió).
+  DateTime? get limiteParaArrepentirse =>
+      _recibido?.add(plazoDeArrepentimiento);
+
+  /// LEY 24.240 (art. 34) y Resolución 424/2020: en una compra a
+  /// distancia, el comprador puede arrepentirse sin dar explicaciones
+  /// dentro de los 10 días corridos desde que la recibe. Antes de
+  /// recibirla, también. Una sola vez.
+  bool puedeArrepentirse(DateTime ahora) {
+    if (arrepentido) return false;
+    final limite = limiteParaArrepentirse;
+    return limite == null || !ahora.isAfter(limite);
+  }
 }
 
 /// Lo que el comprador eligió para un taller en el checkout: todavía no
@@ -123,3 +153,6 @@ class CompraTaller {
 
   int get total => subtotal + costoEnvio;
 }
+
+/// El plazo para arrepentirse de una compra a distancia (Ley 24.240).
+const plazoDeArrepentimiento = Duration(days: 10);

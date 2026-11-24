@@ -8,6 +8,11 @@ import '../services/pedidos_service.dart';
 import 'catalogo_repository.dart';
 import 'cuentas_repository.dart';
 
+/// Se quiso usar el botón de arrepentimiento después de los 10 días.
+class FueraDePlazo implements Exception {
+  const FueraDePlazo();
+}
+
 /// Se quiso comprar una pieza que ya no está a la venta.
 class PiezaNoDisponible implements Exception {
   const PiezaNoDisponible(this.titulo);
@@ -19,7 +24,7 @@ class PiezaNoDisponible implements Exception {
 }
 
 /// Qué le pasó a un pedido.
-enum TipoDeCambio { nuevo, estado, calificacion, respuesta }
+enum TipoDeCambio { nuevo, estado, calificacion, respuesta, arrepentimiento }
 
 /// Un evento del Stream de pedidos: cuál cambió y qué le pasó.
 typedef CambioDePedido = ({Pedido pedido, TipoDeCambio tipo});
@@ -135,6 +140,8 @@ class PedidosRepository {
       calificacion: _calificacionDesde(
         crudo['calificacion'] as Map<String, dynamic>?,
       ),
+      entregadoEl: _fechaDesde(crudo['entregado_el']),
+      arrepentidoEl: _fechaDesde(crudo['arrepentido_el']),
     );
   }
 
@@ -179,6 +186,13 @@ class PedidosRepository {
       if (estado != actual.estado) {
         actual.estado = estado;
         _avisarCambio(actual, TipoDeCambio.estado);
+      }
+
+      actual.entregadoEl ??= _fechaDesde(crudo['entregado_el']);
+      final arrepentidoEl = _fechaDesde(crudo['arrepentido_el']);
+      if (arrepentidoEl != null && actual.arrepentidoEl == null) {
+        actual.arrepentidoEl = arrepentidoEl;
+        _avisarCambio(actual, TipoDeCambio.arrepentimiento);
       }
 
       final calificacion = _calificacionDesde(
@@ -263,6 +277,8 @@ class PedidosRepository {
 
   Future<void> cambiarEstado(Pedido pedido, EstadoPedido estado) async {
     pedido.estado = estado;
+    // Desde la entrega corren los 10 días para arrepentirse.
+    if (estado == EstadoPedido.entregado) pedido.entregadoEl ??= DateTime.now();
     await _servicio.guardar(_aCrudo(pedido));
     _avisarCambio(pedido, TipoDeCambio.estado);
   }
@@ -278,6 +294,16 @@ class PedidosRepository {
     );
     await _servicio.guardar(_aCrudo(pedido));
     _avisarCambio(pedido, TipoDeCambio.calificacion);
+  }
+
+  /// El botón de arrepentimiento: el comprador devuelve la compra.
+  /// Lanza FueraDePlazo si ya pasaron los 10 días (o si ya lo usó).
+  Future<void> arrepentirse(Pedido pedido) async {
+    final ahora = DateTime.now();
+    if (!pedido.puedeArrepentirse(ahora)) throw const FueraDePlazo();
+    pedido.arrepentidoEl = ahora;
+    await _servicio.guardar(_aCrudo(pedido));
+    _avisarCambio(pedido, TipoDeCambio.arrepentimiento);
   }
 
   Future<void> responder(Pedido pedido, String respuesta) async {
@@ -317,6 +343,8 @@ class PedidosRepository {
       'costo_envio': pedido.costoEnvio,
       'comision_pct': pedido.comisionPct,
       'estado': pedido.estado.clave,
+      'entregado_el': pedido.entregadoEl?.toIso8601String(),
+      'arrepentido_el': pedido.arrepentidoEl?.toIso8601String(),
       'calificacion': calificacion == null
           ? null
           : {
@@ -326,6 +354,9 @@ class PedidosRepository {
             },
     };
   }
+
+  static DateTime? _fechaDesde(Object? valor) =>
+      valor == null ? null : DateTime.parse(valor as String);
 
   MetodoEntrega _entregaDesde(String clave) => switch (clave) {
     'cadete' => MetodoEntrega.cadete,

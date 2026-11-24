@@ -60,7 +60,8 @@ service cloud.firestore {
       allow create: if adentro();
       allow update: if esElTaller(resource.data.taller_cuit)
         || esAdmin()
-        || (adentro() && soloCambia(['calificacion']));
+        || (adentro()
+            && soloCambia(['calificacion', 'arrepentido_el', 'entregado_el']));
       allow delete: if false;
     }
 

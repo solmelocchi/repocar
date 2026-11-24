@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../dependencias.dart';
+import '../../core/aviso.dart';
 import '../../core/colores.dart';
 import '../../ingreso/widgets/cerrar_sesion.dart';
 import '../../ingreso/widgets/ingreso_screen.dart';
@@ -144,6 +145,28 @@ class _CuentaScreenState extends State<CuentaScreen> {
               ],
             ),
           ),
+
+          // El BOTÓN DE ARREPENTIMIENTO, a la vista (Resolución 424/2020):
+          // lleva a "Pedidos", donde se elige qué compra devolver.
+          if (_deps.sesion.hayCliente && !_deps.sesion.esAdmin) ...[
+            _titulo('Compras'),
+            Card(
+              margin: EdgeInsets.zero,
+              child: ListTile(
+                leading: const Icon(Icons.undo, color: Colors.red),
+                title: const Text('Botón de arrepentimiento'),
+                subtitle: const Text(
+                  'Devolvé una compra dentro de los 10 días desde que la '
+                  'recibís, sin dar explicaciones.',
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  _deps.pestanaComprador.value = 2; // Pedidos
+                  avisar(context, 'Elegí el pedido que querés devolver');
+                },
+              ),
+            ),
+          ],
 
           _titulo('Avisos'),
           Card(

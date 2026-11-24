@@ -141,6 +141,17 @@ class PedidosViewModel extends ChangeNotifier {
           PoliticaDeAvisos.idRecordatorio(pedido.numero),
         );
 
+      case TipoDeCambio.arrepentimiento:
+        // Al taller: el comprador usó el botón de arrepentimiento.
+        await _notificaciones.avisar(
+          para: pedido.taller.cuit,
+          titulo: 'Devolución del pedido ${pedido.numero}',
+          texto:
+              '${pedido.cliente} se arrepintió de la compra. Coordiná la '
+              'devolución.',
+          payload: 'pedido:${pedido.numero}',
+        );
+
       case TipoDeCambio.estado:
       case TipoDeCambio.respuesta:
         break;
@@ -165,6 +176,16 @@ class PedidosViewModel extends ChangeNotifier {
 
   Future<void> responder(Pedido pedido, String respuesta) =>
       _repositorio.responder(pedido, respuesta);
+
+  /// El botón de arrepentimiento. Devuelve false si ya pasó el plazo.
+  Future<bool> arrepentirse(Pedido pedido) async {
+    try {
+      await _repositorio.arrepentirse(pedido);
+      return true;
+    } on FueraDePlazo {
+      return false;
+    }
+  }
 
   @override
   void dispose() {

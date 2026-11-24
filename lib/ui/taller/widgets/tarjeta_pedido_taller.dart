@@ -70,6 +70,18 @@ class TarjetaPedidoTaller extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(pedido.detalle, style: const TextStyle(fontSize: 13)),
+              if (pedido.arrepentido)
+                const Padding(
+                  padding: EdgeInsets.only(top: 4),
+                  child: Text(
+                    'El comprador se arrepintió: coordiná la devolución',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
               const SizedBox(height: 4),
               Text(
                 pedido.entrega == MetodoEntrega.retiro
