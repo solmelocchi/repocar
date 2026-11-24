@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../dependencias.dart';
+import '../../../domain/filtro_de_pedidos.dart';
 import '../../../domain/models/pedido.dart';
 import '../../../domain/models/taller.dart';
 import '../../core/colores.dart';
@@ -9,6 +10,8 @@ import '../../core/formato.dart';
 import '../../core/vistas_de_carga.dart';
 import '../../cuenta/widgets/cuenta_screen.dart';
 import '../../pedidos/widgets/detalle_pedido_screen.dart';
+import '../../pedidos/widgets/pedidos_filtrables.dart';
+import 'comision_del_taller.dart';
 import 'control_de_preguntas.dart';
 
 /// El panel de TalleresYa (el que pidió el cliente): cuánto vendió cada
@@ -85,21 +88,25 @@ class _Resumen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('TalleresYa', style: TextStyle(fontSize: 18)),
-            Text(
-              'Últimos 30 días',
-              style: TextStyle(fontSize: 13, color: Colors.white70),
-            ),
-          ],
+        title: ListenableBuilder(
+          listenable: vm,
+          builder: (context, _) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('TalleresYa', style: TextStyle(fontSize: 18)),
+              Text(
+                vm.periodo.texto,
+                style: const TextStyle(fontSize: 13, color: Colors.white70),
+              ),
+            ],
+          ),
         ),
       ),
       body: ListenableBuilder(
         // Los pedidos llegan del servidor por un Stream: si un comprador
-        // compra ahora, el número sube solo.
-        listenable: vm,
+        // compra ahora, el número sube solo. Y si Ramallo cambia una
+        // comisión, la tabla se actualiza.
+        listenable: Listenable.merge([vm, deps.comisiones]),
         builder: (context, _) {
           if (vm.estado == EstadoCarga.cargando) return const VistaCargando();
           if (vm.estado == EstadoCarga.error) {
@@ -112,9 +119,22 @@ class _Resumen extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                // El período de los números: lo elige Ramallo.
+                Wrap(
+                  spacing: 6,
+                  children: [
+                    for (final periodo in PeriodoDeResumen.values)
+                      ChoiceChip(
+                        label: Text(periodo.corto),
+                        selected: vm.periodo == periodo,
+                        onSelected: (_) => vm.periodo = periodo,
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 _Numero(
                   titulo: 'Comisión a cobrar',
-                  valor: pesos(vm.comisionDelMes),
+                  valor: pesos(vm.comisionDelPeriodo),
                   icono: Icons.savings_outlined,
                   destacado: true,
                 ),
@@ -124,7 +144,7 @@ class _Resumen extends StatelessWidget {
                     Expanded(
                       child: _Numero(
                         titulo: 'Vendido',
-                        valor: pesos(vm.vendidoDelMes),
+                        valor: pesos(vm.vendidoDelPeriodo),
                         icono: Icons.payments_outlined,
                       ),
                     ),
@@ -132,7 +152,7 @@ class _Resumen extends StatelessWidget {
                     Expanded(
                       child: _Numero(
                         titulo: 'Pedidos',
-                        valor: '${vm.pedidosDelMes}',
+                        valor: '${vm.pedidosDelPeriodo}',
                         icono: Icons.receipt_long_outlined,
                       ),
                     ),
@@ -146,7 +166,7 @@ class _Resumen extends StatelessWidget {
                 const SizedBox(height: 2),
                 const Text(
                   'Del que más vendió al que menos. Tocá uno para ver sus '
-                  'pedidos.',
+                  'pedidos y cambiar su comisión.',
                   style: TextStyle(fontSize: 12, color: Colors.black54),
                 ),
                 const SizedBox(height: 10),
@@ -169,8 +189,8 @@ class _Resumen extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                       subtitle: Text(
-                        'Vendió ${pesos(fila.vendido)} · comisión '
-                        '${(fila.taller.comision * 100).round()}%',
+                        'Vendió ${pesos(fila.vendido)} · '
+                        '${textoDeComision(fila.taller)}',
                         style: const TextStyle(fontSize: 12),
                       ),
                       trailing: Text(
@@ -272,15 +292,15 @@ class _PedidosDeTaller extends StatelessWidget {
       body: ListenableBuilder(
         listenable: deps.pedidos,
         builder: (context, _) {
-          final pedidos = deps.pedidos.deTaller(taller);
-          if (pedidos.isEmpty) {
-            return const Center(child: Text('Este taller no tiene pedidos.'));
-          }
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              for (final pedido in pedidos)
-                _FilaPedido(deps: deps, pedido: pedido),
+              ComisionDelTaller(deps: deps, taller: taller),
+              PedidosFiltrables(
+                pedidos: deps.pedidos.deTaller(taller),
+                vacio: 'Este taller no tiene pedidos.',
+                construir: (pedido) => _FilaPedido(deps: deps, pedido: pedido),
+              ),
             ],
           );
         },
@@ -289,7 +309,7 @@ class _PedidosDeTaller extends StatelessWidget {
   }
 }
 
-/// La pestaña Pedidos: todos los de la red, del más nuevo al más viejo.
+/// La pestaña Pedidos: todos los de la red, con buscador y orden.
 class _TodosLosPedidos extends StatelessWidget {
   final Dependencias deps;
 
@@ -302,13 +322,15 @@ class _TodosLosPedidos extends StatelessWidget {
       body: ListenableBuilder(
         listenable: deps.pedidos,
         builder: (context, _) {
-          final pedidos = [...deps.pedidos.todos]
-            ..sort((a, b) => b.fecha.compareTo(a.fecha));
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              for (final pedido in pedidos)
-                _FilaPedido(deps: deps, pedido: pedido, conTaller: true),
+              PedidosFiltrables(
+                pedidos: deps.pedidos.todos,
+                vacio: 'Todavía no hay pedidos.',
+                construir: (pedido) =>
+                    _FilaPedido(deps: deps, pedido: pedido, conTaller: true),
+              ),
             ],
           );
         },
@@ -352,9 +374,10 @@ class _FilaPedido extends StatelessWidget {
               pesos(pedido.comision),
               style: const TextStyle(fontWeight: FontWeight.bold, color: verde),
             ),
-            const Text(
-              'comisión',
-              style: TextStyle(fontSize: 10, color: Colors.black45),
+            Text(
+              // Un pedido hecho durante la promoción no deja comisión.
+              pedido.comisionPct == 0 ? 'sin comisión' : 'comisión',
+              style: const TextStyle(fontSize: 10, color: Colors.black45),
             ),
           ],
         ),

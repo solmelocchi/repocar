@@ -26,6 +26,7 @@ import 'domain/models/pieza.dart';
 import 'plataforma/capacidades.dart';
 import 'plataforma/conectividad.dart';
 import 'plataforma/segundo_plano.dart';
+import 'ui/admin/view_models/comisiones_view_model.dart';
 import 'ui/admin/view_models/control_de_preguntas_view_model.dart';
 import 'ui/busqueda/view_models/vehiculos_view_model.dart';
 import 'ui/carrito/view_models/carrito_view_model.dart';
@@ -69,6 +70,7 @@ class Dependencias {
     required this.misPreguntas,
     required this.nuevasPreguntas,
     required this.controlDePreguntas,
+    required this.comisiones,
   });
 
   final VehiculosViewModel vehiculos;
@@ -107,6 +109,9 @@ class Dependencias {
   /// El control de TalleresYa: todas las preguntas y las publicaciones
   /// para revisar. Lo usa el panel de administración.
   final ControlDePreguntasViewModel controlDePreguntas;
+
+  /// Ramallo cambia la comisión de cada taller desde su panel.
+  final ComisionesViewModel comisiones;
 
   /// En qué pestaña de la barra de abajo está el comprador. Vive acá
   /// para que otra pantalla (el pedido confirmado) lo pueda llevar a una.
@@ -263,6 +268,7 @@ class Dependencias {
         inicial: inicial,
       ),
       misPreguntas: misPreguntas,
+      comisiones: ComisionesViewModel(repositorio: cuentasRepo),
       controlDePreguntas: ControlDePreguntasViewModel(
         repositorio: preguntasRepo,
         buscarPieza: catalogo.buscarPorId,

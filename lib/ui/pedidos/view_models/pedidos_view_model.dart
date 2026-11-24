@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../data/repositories/pedidos_repository.dart';
 import '../../../domain/models/envio.dart';
+import '../../../domain/filtro_de_pedidos.dart';
 import '../../../domain/models/pedido.dart';
 import '../../../domain/models/taller.dart';
 import '../../../domain/politica_de_avisos.dart';
@@ -171,15 +172,30 @@ class PedidosViewModel extends ChangeNotifier {
     super.dispose();
   }
 
-  // --- Los números de TalleresYa (últimos 30 días) ---
+  // --- Los números de TalleresYa, según el período que elija ---
 
-  List<Pedido> get _delMes => _repositorio.ultimos30Dias;
+  PeriodoDeResumen _periodo = PeriodoDeResumen.mes;
 
-  int get pedidosDelMes => _delMes.length;
+  PeriodoDeResumen get periodo => _periodo;
 
-  int get vendidoDelMes => _delMes.fold(0, (suma, p) => suma + p.subtotal);
+  /// Ramallo elige otro período: los números se recalculan y el panel se
+  /// redibuja.
+  set periodo(PeriodoDeResumen nuevo) {
+    if (nuevo == _periodo) return;
+    _periodo = nuevo;
+    notifyListeners();
+  }
 
-  int get comisionDelMes => _delMes.fold(0, (suma, p) => suma + p.comision);
+  List<Pedido> get _delPeriodo =>
+      _repositorio.desde(_periodo.desde(DateTime.now()));
+
+  int get pedidosDelPeriodo => _delPeriodo.length;
+
+  int get vendidoDelPeriodo =>
+      _delPeriodo.fold(0, (suma, p) => suma + p.subtotal);
+
+  int get comisionDelPeriodo =>
+      _delPeriodo.fold(0, (suma, p) => suma + p.comision);
 
   /// Cuánto vendió cada taller y cuánta comisión le toca cobrar a
   /// TalleresYa, del que más vendió al que menos.
@@ -188,11 +204,11 @@ class PedidosViewModel extends ChangeNotifier {
       for (final taller in talleres)
         (
           taller: taller,
-          ventas: _delMes.where((p) => p.taller.cuit == taller.cuit).length,
-          vendido: _delMes
+          ventas: _delPeriodo.where((p) => p.taller.cuit == taller.cuit).length,
+          vendido: _delPeriodo
               .where((p) => p.taller.cuit == taller.cuit)
               .fold(0, (suma, p) => suma + p.subtotal),
-          comision: _delMes
+          comision: _delPeriodo
               .where((p) => p.taller.cuit == taller.cuit)
               .fold(0, (suma, p) => suma + p.comision),
         ),

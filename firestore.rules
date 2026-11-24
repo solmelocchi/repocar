@@ -68,6 +68,11 @@ service cloud.firestore {
     // Las contraseñas no están acá: las tiene Firebase Authentication.
     match /cuentas/{id} {
       allow read: if adentro();
+      // TalleresYa cambia la comisión de un taller desde su panel, y nada
+      // más de esa cuenta.
+      allow update: if esAdmin()
+        && resource.data.tipo == 'talleres'
+        && soloCambia(['comision', 'sin_comision_hasta']);
       allow write: if (request.resource.data.tipo == 'talleres'
                         && esElTaller(request.resource.data.cuit))
         || (request.resource.data.tipo == 'clientes'

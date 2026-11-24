@@ -71,12 +71,29 @@ class CuentasRepository {
     _claves.clear();
     claves.forEach((cuenta, clave) => _claves[cuenta] = hashDeClave(clave));
 
-    // 2. Lo que se registró en este teléfono.
+    // 2. Lo guardado: las cuentas que se registraron y las que cambiaron.
+    //    Lo guardado GANA: si un taller de ejemplo editó su perfil, o
+    //    TalleresYa le cambió la comisión, vale lo nuevo (antes se
+    //    agregaba al final y seguía mandando el dato viejo).
     for (final guardado in await _almacen.leerCuentas('talleres')) {
-      _talleres.add(Taller.desdeJson(guardado));
+      final taller = Taller.desdeJson(guardado);
+      final lugar = _talleres.indexWhere(
+        (t) => soloNumeros(t.cuit) == soloNumeros(taller.cuit),
+      );
+      if (lugar == -1) {
+        _talleres.add(taller);
+      } else {
+        _talleres[lugar] = taller;
+      }
     }
     for (final guardado in await _almacen.leerCuentas('clientes')) {
-      _clientes.add(Cliente.desdeJson(guardado));
+      final cliente = Cliente.desdeJson(guardado);
+      final lugar = _clientes.indexWhere((c) => c.usuario == cliente.usuario);
+      if (lugar == -1) {
+        _clientes.add(cliente);
+      } else {
+        _clientes[lugar] = cliente;
+      }
     }
     for (final guardada in await _almacen.leerCuentas('claves')) {
       _claves[guardada['id'] as String] = guardada['hash'] as String;

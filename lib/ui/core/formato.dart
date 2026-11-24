@@ -9,3 +9,8 @@ String pesos(int valor) {
   }
   return '\$ $buffer';
 }
+
+/// Muestra una fecha como "24/02/2027".
+String fechaCorta(DateTime fecha) =>
+    '${fecha.day.toString().padLeft(2, '0')}/'
+    '${fecha.month.toString().padLeft(2, '0')}/${fecha.year}';

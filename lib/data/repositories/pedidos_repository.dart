@@ -241,7 +241,9 @@ class PedidosRepository {
         entrega: compra.entrega,
         direccion: compra.direccion,
         costoEnvio: compra.costoEnvio,
-        comisionPct: compra.taller.comision, // se congela acá
+        // Se congela acá la que corresponde HOY: 0 si el taller está en
+        // la promoción de bienvenida.
+        comisionPct: compra.taller.comisionVigente(DateTime.now()),
       );
 
       // Primero en la lista y después a la base: cuando el servidor
@@ -292,11 +294,11 @@ class PedidosRepository {
       _pedidos.where((p) => p.cliente == nombre).toList()
         ..sort((a, b) => b.fecha.compareTo(a.fecha));
 
-  /// Los pedidos del último mes, que son los que mira TalleresYa.
-  List<Pedido> get ultimos30Dias {
-    final desde = DateTime.now().subtract(const Duration(days: 30));
-    return _pedidos.where((p) => p.fecha.isAfter(desde)).toList();
-  }
+  /// Los pedidos desde una fecha (null: todos). Es lo que mira TalleresYa
+  /// en su resumen, según el período que elija.
+  List<Pedido> desde(DateTime? fecha) => fecha == null
+      ? List.of(_pedidos)
+      : _pedidos.where((p) => p.fecha.isAfter(fecha)).toList();
 
   /// El pedido como se guarda: igual que llegaría de un servidor.
   Map<String, dynamic> _aCrudo(Pedido pedido) {

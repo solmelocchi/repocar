@@ -13,6 +13,7 @@ import '../../core/vistas_de_carga.dart';
 import '../../cuenta/widgets/cuenta_screen.dart';
 import '../../notificaciones/widgets/activar_avisos.dart';
 import '../../notificaciones/widgets/boton_notificaciones.dart';
+import '../../pedidos/widgets/pedidos_filtrables.dart';
 import '../../preguntas/widgets/preguntas_pendientes.dart';
 import 'publicar_screen.dart';
 import 'tarjeta_pedido_taller.dart';
@@ -263,17 +264,12 @@ class _TallerScreenState extends State<TallerScreen> {
                   'aunque no estés mirando la app.',
             ),
             PreguntasPendientes(deps: widget.deps),
-            if (mios.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 24),
-                child: Text(
-                  'Todavía no te hicieron ningún pedido.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ),
-            for (final pedido in mios)
-              TarjetaPedidoTaller(pedido: pedido, deps: widget.deps),
+            PedidosFiltrables(
+              pedidos: mios,
+              vacio: 'Todavía no te hicieron ningún pedido.',
+              construir: (pedido) =>
+                  TarjetaPedidoTaller(pedido: pedido, deps: widget.deps),
+            ),
           ],
         );
       },
