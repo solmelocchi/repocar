@@ -13,6 +13,9 @@ El grupo defiende este código en un examen oral. Por eso cada decisión tiene q
 | Repuestos usados: hay **uno** de cada uno | Sin cantidad en el carrito; `Pieza.aLaVenta`; `PiezaNoDisponible` en `pedidos_repository.dart` |
 | Califica solo quien compró y recibió; el taller responde | `Pedido.sePuedeCalificar`; `DialogoResponder` |
 | Panel de administración con ventas y comisión | Cuenta `admin@talleresya.com`, `ui/admin/` |
+| Ramallo cambia la comisión de cada taller y da 3 meses sin comisión | `ComisionesViewModel`, `Taller.comisionVigente` |
+| Buscar y ordenar pedidos; resumen por período | `domain/filtro_de_pedidos.dart`, `PedidosFiltrables` |
+| Botón de arrepentimiento (Ley 24.240, Res. 424/2020) | `Pedido.puedeArrepentirse`, detalle del pedido y Cuenta |
 | Consultas del comprador **adentro de la app** (Ramallo no quiere que la venta se vaya a WhatsApp) | Preguntas y respuestas en la publicación: `ui/preguntas/`, `PreguntasRepository`; no se pueden pasar teléfonos ni mails (`tieneDatosDeContacto`) |
 | Que Ramallo pueda controlar que las ventas queden en la app | Sin WhatsApp ni teléfono del taller a la vista. En el panel: todas las preguntas y las publicaciones para revisar (`ui/admin/`, `domain/control_de_ventas.dart`) |
 | Android primero, sin cerrarle la puerta a iPhone | Flutter: el mismo código compila para iOS |
