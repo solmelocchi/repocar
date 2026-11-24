@@ -8,12 +8,13 @@ El grupo defiende este código en un examen oral. Por eso cada decisión tiene q
 
 | Requerimiento | Dónde está |
 |---|---|
-| TalleresYa cobra una comisión a cada taller | `Taller.comision`, congelada en cada `Pedido`; panel en `ui/admin/` |
+| TalleresYa cobra una comisión a cada taller (10%, con excepciones por taller; los primeros meses puede ser 0%) | `Taller.comision`, congelada en cada `Pedido`; panel en `ui/admin/` |
 | Envíos híbridos: retiro, cadete del taller o envío por zona | `MetodoEntrega` en `domain/models/envio.dart`; checkout en `ui/carrito/` |
 | Repuestos usados: hay **uno** de cada uno | Sin cantidad en el carrito; `Pieza.aLaVenta`; `PiezaNoDisponible` en `pedidos_repository.dart` |
 | Califica solo quien compró y recibió; el taller responde | `Pedido.sePuedeCalificar`; `DialogoResponder` |
 | Panel de administración con ventas y comisión | Cuenta `admin@talleresya.com`, `ui/admin/` |
-| Contacto con el taller por WhatsApp, sin chat interno | `plataforma/whatsapp.dart` |
+| Consultas del comprador **adentro de la app** (Ramallo no quiere que la venta se vaya a WhatsApp) | Preguntas y respuestas en la publicación: `ui/preguntas/`, `PreguntasRepository`; no se pueden pasar teléfonos ni mails (`tieneDatosDeContacto`) |
+| Coordinar la entrega después de comprar | WhatsApp, recién en el detalle del pedido: `plataforma/whatsapp.dart` |
 | Android primero, sin cerrarle la puerta a iPhone | Flutter: el mismo código compila para iOS |
 | El taller se entera de cada pedido | Notificaciones locales, push (FCM) y WorkManager |
 

@@ -26,6 +26,7 @@ Future<void> main() async {
     autenticacion: servidor.autenticacion,
     push: servidor.push,
     tokensPush: servidor.tokens,
+    preguntas: servidor.preguntas,
   );
 
   // Notificaciones y WorkManager se preparan antes de dibujar. Si algo

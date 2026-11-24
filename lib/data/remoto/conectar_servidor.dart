@@ -6,9 +6,11 @@ import 'package:flutter/foundation.dart';
 import '../../firebase_options.dart';
 import '../local/almacen_local.dart';
 import '../services/autenticacion_service.dart';
+import '../services/preguntas_service.dart';
 import '../services/push_service.dart';
 import 'almacen_con_servidor.dart';
 import 'base_remota.dart';
+import 'preguntas_firestore.dart';
 import 'tokens_push.dart';
 
 /// Lo que da el servidor: la base, el inicio de sesión y las push (con
@@ -18,6 +20,7 @@ typedef Servidor = ({
   AutenticacionService autenticacion,
   PushService push,
   TokensPush tokens,
+  PreguntasService preguntas,
 });
 
 /// Arma la base que va a usar la app (la del teléfono MÁS el servidor)
@@ -60,6 +63,7 @@ Future<Servidor> conectarServidor() async {
       autenticacion: AutenticacionFirebase(),
       push: esAndroid ? PushFcm() : const SinPush(),
       tokens: esAndroid ? TokensEnFirestore() : const SinTokens(),
+      preguntas: PreguntasFirestore(),
     );
   } catch (_) {
     return (
@@ -67,6 +71,7 @@ Future<Servidor> conectarServidor() async {
       autenticacion: const SinAutenticacion(),
       push: const SinPush(),
       tokens: const SinTokens(),
+      preguntas: PreguntasEnMemoria(),
     );
   }
 }

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../dependencias.dart';
 import '../../../domain/models/auto.dart';
 import '../../../domain/models/pieza.dart';
-import '../../../plataforma/whatsapp.dart';
 import '../../core/aviso.dart';
 import '../../core/colores.dart';
 import '../../core/formato.dart';
+import '../../preguntas/widgets/preguntas_de_pieza.dart';
 import '../../taller/widgets/publicar_screen.dart';
 import 'boton_carrito.dart';
 import 'etiqueta_estado.dart';
@@ -160,9 +160,9 @@ class DetalleScreen extends StatelessWidget {
                   contentPadding: EdgeInsets.zero,
                   leading: const CircleAvatar(child: Icon(Icons.store)),
                   title: Text(pieza.taller.nombre),
-                  subtitle: Text(
-                    '${pieza.taller.zona} · ${pieza.taller.telefono}',
-                  ),
+                  // Sin el teléfono: antes de comprar, las consultas van por
+                  // las preguntas de abajo, así la venta queda en RepoCar.
+                  subtitle: Text(pieza.taller.zona),
                 ),
                 const SizedBox(height: 12),
 
@@ -173,20 +173,18 @@ class DetalleScreen extends StatelessWidget {
               ],
             ),
           ),
+          PreguntasDePieza(
+            deps: deps,
+            pieza: pieza,
+            esDelTaller: esDelTaller,
+            sugerencia: miAuto == null ? null : '¿Le sirve a mi $miAuto?',
+          ),
         ],
       ),
     );
   }
 
   List<Widget> _accionesDelComprador(BuildContext context, Pieza pieza) => [
-    // Abre WhatsApp con el mensaje ya escrito para el taller.
-    OutlinedButton.icon(
-      onPressed: () => _consultarPorWhatsApp(context, pieza),
-      icon: const Icon(Icons.chat),
-      label: const Text('Consultar por WhatsApp'),
-      style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-    ),
-    const SizedBox(height: 10),
     // Escucha al carrito: si la agregás, el botón cambia solo.
     ListenableBuilder(
       listenable: deps.carrito,
@@ -300,28 +298,5 @@ class DetalleScreen extends StatelessWidget {
   void _agregar(BuildContext context, Pieza pieza) {
     deps.carrito.agregar(pieza);
     avisar(context, 'Agregado al carrito');
-  }
-
-  /// Arma el mensaje y abre WhatsApp en el chat del taller.
-  Future<void> _consultarPorWhatsApp(BuildContext context, Pieza pieza) async {
-    // Se agarra antes del await: después, la pantalla podría ya no estar.
-    final mensajero = ScaffoldMessenger.of(context);
-    final miAuto = auto;
-    final queAuto = miAuto == null ? '' : ' Mi auto es un $miAuto. ¿Me sirve?';
-
-    final abrio = await abrirWhatsApp(
-      pieza.taller.telefono,
-      'Hola! Consulto por ${pieza.titulo} (${pesos(pieza.precio)}) '
-      'que vi en RepoCar.$queAuto',
-    );
-
-    if (!abrio) {
-      mensajero.showSnackBar(
-        const SnackBar(
-          content: Text('No se pudo abrir WhatsApp en este teléfono'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
   }
 }

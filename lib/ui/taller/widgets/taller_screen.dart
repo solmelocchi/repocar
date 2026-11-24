@@ -13,6 +13,7 @@ import '../../core/vistas_de_carga.dart';
 import '../../cuenta/widgets/cuenta_screen.dart';
 import '../../notificaciones/widgets/activar_avisos.dart';
 import '../../notificaciones/widgets/boton_notificaciones.dart';
+import '../../preguntas/widgets/preguntas_pendientes.dart';
 import 'publicar_screen.dart';
 import 'tarjeta_pedido_taller.dart';
 
@@ -261,6 +262,7 @@ class _TallerScreenState extends State<TallerScreen> {
                   'Activá los avisos para enterarte de cada pedido nuevo '
                   'aunque no estés mirando la app.',
             ),
+            PreguntasPendientes(deps: widget.deps),
             if (mios.isEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),

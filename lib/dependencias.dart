@@ -8,6 +8,7 @@ import 'data/repositories/cuentas_repository.dart';
 import 'data/repositories/notificaciones_repository.dart';
 import 'data/remoto/tokens_push.dart';
 import 'data/repositories/pedidos_repository.dart';
+import 'data/repositories/preguntas_repository.dart';
 import 'data/repositories/push_repository.dart';
 import 'data/repositories/vehiculos_repository.dart';
 import 'data/services/catalogo_service.dart';
@@ -17,9 +18,11 @@ import 'data/services/cuentas_service.dart';
 import 'data/services/autenticacion_service.dart';
 import 'data/services/notificaciones_service.dart';
 import 'data/services/pedidos_service.dart';
+import 'data/services/preguntas_service.dart';
 import 'data/services/push_service.dart';
 import 'data/services/vehiculos_service.dart';
 import 'data/services/vehiculos_service_http.dart';
+import 'domain/models/pieza.dart';
 import 'plataforma/capacidades.dart';
 import 'plataforma/conectividad.dart';
 import 'plataforma/segundo_plano.dart';
@@ -30,6 +33,8 @@ import 'ui/core/estado_carga.dart';
 import 'ui/ingreso/view_models/sesion_view_model.dart';
 import 'ui/notificaciones/view_models/notificaciones_view_model.dart';
 import 'ui/pedidos/view_models/pedidos_view_model.dart';
+import 'ui/preguntas/view_models/mis_preguntas_view_model.dart';
+import 'ui/preguntas/view_models/preguntas_view_model.dart';
 import 'ui/sistema/view_models/conexion_view_model.dart';
 import 'ui/taller/view_models/foto_view_model.dart';
 
@@ -60,6 +65,8 @@ class Dependencias {
     required this.segundoPlano,
     required this.almacen,
     required this.nuevaFoto,
+    required this.misPreguntas,
+    required this.nuevasPreguntas,
   });
 
   final VehiculosViewModel vehiculos;
@@ -88,6 +95,13 @@ class Dependencias {
   final FotoViewModel Function({required String idPieza, String? inicial})
   nuevaFoto;
 
+  /// Las preguntas de quien tiene la sesión: avisa al taller de las nuevas
+  /// y al comprador de las respuestas. Vive toda la app.
+  final MisPreguntasViewModel misPreguntas;
+
+  /// Cada ficha abierta tiene su propio ViewModel de preguntas.
+  final PreguntasViewModel Function(Pieza pieza) nuevasPreguntas;
+
   /// En qué pestaña de la barra de abajo está el comprador. Vive acá
   /// para que otra pantalla (el pedido confirmado) lo pueda llevar a una.
   final pestanaComprador = ValueNotifier<int>(0);
@@ -104,6 +118,7 @@ class Dependencias {
     PushService? push,
     TokensPush? tokensPush,
     FuenteDeFotos? fuenteDeFotos,
+    PreguntasService? preguntas,
   }) {
     // 0. La base: de dónde salen y a dónde van los datos que tienen que
     //    sobrevivir a cerrar la app. main() pasa la que tiene SERVIDOR
@@ -153,6 +168,9 @@ class Dependencias {
       almacen: base,
     );
     final politicas = PoliticasRemotas(configuracionService);
+    final preguntasRepo = PreguntasRepository(
+      servicio: preguntas ?? PreguntasEnMemoria(),
+    );
     final pushRepo = PushRepository(
       servicio: push ?? const SinPush(),
       tokens: tokensPush ?? const SinTokens(),
@@ -190,6 +208,23 @@ class Dependencias {
     // entera de quién entró (guarda el token) o de que salió (lo borra).
     sesion.addListener(() => pushRepo.usuarioActual(quienEntro()));
 
+    // Las preguntas siguen a la sesión de la misma forma (OBSERVER): un
+    // taller escucha las que le hacen; un comprador, las que él hizo.
+    final misPreguntas = MisPreguntasViewModel(
+      repositorio: preguntasRepo,
+      avisos: notificaciones,
+    );
+    sesion.addListener(() {
+      final taller = sesion.taller;
+      if (taller != null) {
+        misPreguntas.seguirTaller(taller.cuit);
+      } else if (sesion.hayCliente) {
+        misPreguntas.seguirComprador(sesion.nombreComprador);
+      } else {
+        misPreguntas.dejar();
+      }
+    });
+
     return Dependencias._(
       vehiculos: vehiculos,
       catalogo: catalogo,
@@ -220,6 +255,13 @@ class Dependencias {
         capacidades: capacidades,
         idPieza: idPieza,
         inicial: inicial,
+      ),
+      misPreguntas: misPreguntas,
+      nuevasPreguntas: (pieza) => PreguntasViewModel(
+        repositorio: preguntasRepo,
+        pieza: pieza,
+        // Pregunta el comprador con sesión; un taller no pregunta.
+        autor: () => sesion.hayCliente ? sesion.nombreComprador : null,
       ),
     );
   }

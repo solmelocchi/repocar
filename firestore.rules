@@ -92,6 +92,23 @@ service cloud.firestore {
       allow read, write: if adentro() && request.auth.uid == uid;
     }
 
+    // PREGUNTAS Y RESPUESTAS en las publicaciones (lo que pidió Ramallo en
+    // lugar del chat). Las ve cualquiera, como en una tienda. Pregunta
+    // quien inició sesión, con su propio usuario y sin respuesta. Responde
+    // SOLO el taller dueño, y sin poder cambiar la pregunta. Nadie borra.
+    match /preguntas/{id} {
+      allow read: if true;
+      allow create: if adentro()
+        && request.resource.data.autor_uid == request.auth.uid
+        && request.resource.data.texto is string
+        && request.resource.data.texto.size() > 0
+        && request.resource.data.texto.size() <= 300
+        && request.resource.data.respuesta == null;
+      allow update: if esElTaller(resource.data.taller_cuit)
+        && soloCambia(['respuesta', 'respondida']);
+      allow delete: if false;
+    }
+
     // Todo lo demás: cerrado.
     match /{todo=**} {
       allow read, write: if false;

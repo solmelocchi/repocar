@@ -23,6 +23,7 @@ description: Trabajar con la base en la nube de RepoCar (Firestore) - coleccione
 | `cuentas` | Datos de talleres y clientes (sin contraseñas) | Cada uno, la suya |
 | `contadores` | El último número de pedido | Cualquiera con sesión, **solo sumando 1** |
 | `tokens` | El token de push de cada teléfono | Cada uno, el suyo |
+| `preguntas` | Preguntas y respuestas de las publicaciones (públicas) | Pregunta quien tiene sesión (su propio `autor_uid`); responde solo el taller dueño |
 
 ## Para agregar una colección
 
