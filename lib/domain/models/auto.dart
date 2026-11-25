@@ -30,8 +30,8 @@ class ModeloVehiculo {
   factory ModeloVehiculo.desdeJson(Map<String, dynamic> json) => ModeloVehiculo(
     json['marca'] as String,
     json['modelo'] as String,
-    json['desde'] as int,
-    json['hasta'] as int,
+    (json['desde'] as num).toInt(),
+    (json['hasta'] as num).toInt(),
   );
 }
 
