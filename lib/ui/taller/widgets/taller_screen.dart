@@ -4,6 +4,7 @@ import '../../../dependencias.dart';
 import '../../../domain/models/pedido.dart';
 import '../../../domain/models/pieza.dart';
 import '../../../domain/models/taller.dart';
+import '../../../domain/ventas.dart';
 import '../../core/colores.dart';
 import '../../core/estado_carga.dart';
 import '../../core/formato.dart';
@@ -13,6 +14,7 @@ import '../../core/vistas_de_carga.dart';
 import '../../cuenta/widgets/cuenta_screen.dart';
 import '../../notificaciones/widgets/activar_avisos.dart';
 import '../../notificaciones/widgets/boton_notificaciones.dart';
+import '../../pedidos/widgets/detalle_pedido_screen.dart';
 import '../../pedidos/widgets/pedidos_filtrables.dart';
 import '../../preguntas/widgets/preguntas_pendientes.dart';
 import 'publicar_screen.dart';
@@ -30,6 +32,9 @@ class TallerScreen extends StatefulWidget {
 }
 
 class _TallerScreenState extends State<TallerScreen> {
+  /// En "Mis publicaciones": false muestra lo publicado, true lo vendido.
+  bool _verVendidas = false;
+
   int _pestana = 0;
 
   @override
@@ -141,8 +146,9 @@ class _TallerScreenState extends State<TallerScreen> {
   Widget _publicaciones(Taller taller) {
     final vm = widget.deps.catalogo;
 
+    // Escucha también a los pedidos: la fecha de cada venta sale de ahí.
     return ListenableBuilder(
-      listenable: vm,
+      listenable: Listenable.merge([vm, widget.deps.pedidos]),
       builder: (context, _) {
         if (vm.estado == EstadoCarga.cargando) return const VistaCargando();
         if (vm.estado == EstadoCarga.error) {
@@ -150,6 +156,23 @@ class _TallerScreenState extends State<TallerScreen> {
         }
 
         final misPiezas = vm.deTaller(taller);
+        final publicadas = [
+          for (final pieza in misPiezas)
+            if (!pieza.vendida) pieza,
+        ];
+        final ventas = pedidoDeCadaPieza(widget.deps.pedidos.todos);
+        // Las vendidas, de la venta más nueva a la más vieja.
+        final vendidas =
+            [
+              for (final pieza in misPiezas)
+                if (pieza.vendida) pieza,
+            ]..sort((a, b) {
+              final fa = ventas[a.id]?.fecha;
+              final fb = ventas[b.id]?.fecha;
+              if (fa == null || fb == null) return fa == null ? 1 : -1;
+              return fb.compareTo(fa);
+            });
+        final lista = _verVendidas ? vendidas : publicadas;
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
@@ -190,64 +213,95 @@ class _TallerScreenState extends State<TallerScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            if (misPiezas.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 24),
+            // Lo publicado y lo vendido, separados: así el taller ve qué
+            // vendió y cuándo, sin que se mezcle con lo que sigue a la venta.
+            Wrap(
+              spacing: 8,
+              children: [
+                ChoiceChip(
+                  label: Text('Publicadas (${publicadas.length})'),
+                  selected: !_verVendidas,
+                  onSelected: (_) => setState(() => _verVendidas = false),
+                ),
+                ChoiceChip(
+                  label: Text('Vendidas (${vendidas.length})'),
+                  selected: _verVendidas,
+                  onSelected: (_) => setState(() => _verVendidas = true),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            if (lista.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Text(
-                  'Todavía no publicaste ningún repuesto.',
+                  _verVendidas
+                      ? 'Todavía no vendiste nada por RepoCar.'
+                      : 'No tenés repuestos publicados.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: grisTexto),
+                  style: const TextStyle(color: grisTexto),
                 ),
               ),
-            for (final pieza in misPiezas)
-              Card(
-                child: ListTile(
-                  leading: FotoPieza(
-                    pieza: pieza,
-                    ancho: 44,
-                    alto: 44,
-                    radio: 6,
-                    tamanoIcono: 22,
-                  ),
-                  title: Text(pieza.titulo),
-                  subtitle: Text(
-                    pieza.vendida
-                        ? '${pesos(pieza.precio)} · Vendida'
-                        : pieza.pausada
-                        ? '${pesos(pieza.precio)} · Pausada'
-                        : '${pesos(pieza.precio)} · ${pieza.estado.texto}',
-                  ),
-                  // Tocar la tarjeta: la ficha, como la ve el comprador.
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          DetalleScreen(pieza: pieza, deps: widget.deps),
-                    ),
-                  ),
-                  // El lápiz: editar. Lo vendido ya no se edita.
-                  trailing: pieza.vendida
-                      ? const Icon(Icons.check_circle, color: verde, size: 20)
-                      : IconButton(
-                          tooltip: 'Editar',
-                          icon: const Icon(Icons.edit, size: 20),
-                          onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => PublicarScreen(
-                                deps: widget.deps,
-                                pieza: pieza,
-                              ),
-                            ),
-                          ),
-                        ),
-                ),
-              ),
+            for (final pieza in lista) _tarjetaPieza(pieza, ventas[pieza.id]),
             // Lugar para que el botón flotante no tape la última.
             const SizedBox(height: 72),
           ],
         );
       },
+    );
+  }
+
+  /// Una publicación. Si se vendió, [venta] es el pedido que la compró.
+  Widget _tarjetaPieza(Pieza pieza, Pedido? venta) {
+    return Card(
+      child: ListTile(
+        leading: FotoPieza(
+          pieza: pieza,
+          ancho: 44,
+          alto: 44,
+          radio: 6,
+          tamanoIcono: 22,
+        ),
+        title: Text(pieza.titulo),
+        subtitle: Text(
+          pieza.vendida
+              ? venta == null
+                    ? '${pesos(pieza.precio)} · Vendida'
+                    : '${pesos(pieza.precio)} · Vendida el '
+                          '${fechaCorta(venta.fecha)} · pedido ${venta.numero}'
+              : pieza.pausada
+              ? '${pesos(pieza.precio)} · Pausada'
+              : '${pesos(pieza.precio)} · ${pieza.estado.texto}',
+        ),
+        // Tocar la tarjeta: si se vendió, su pedido; si no, la ficha,
+        // como la ve el comprador.
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => venta != null
+                ? DetallePedidoScreen(
+                    pedido: venta,
+                    deps: widget.deps,
+                    comoTaller: true,
+                  )
+                : DetalleScreen(pieza: pieza, deps: widget.deps),
+          ),
+        ),
+        // El lápiz: editar. Lo vendido ya no se edita.
+        trailing: pieza.vendida
+            ? const Icon(Icons.check_circle, color: verde, size: 20)
+            : IconButton(
+                tooltip: 'Editar',
+                icon: const Icon(Icons.edit, size: 20),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        PublicarScreen(deps: widget.deps, pieza: pieza),
+                  ),
+                ),
+              ),
+      ),
     );
   }
 

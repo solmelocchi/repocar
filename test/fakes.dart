@@ -34,8 +34,11 @@ class NotificacionesFalsas implements NotificacionesService {
   @override
   Future<bool> tienePermiso() async => permiso;
 
+  /// Simula que el teléfono lo bloqueó (Android ya no pregunta).
+  bool bloqueado = false;
+
   @override
-  Future<bool> pedirPermiso() async => permiso = true;
+  Future<bool> pedirPermiso() async => bloqueado ? false : permiso = true;
 
   @override
   Future<void> mostrar({
