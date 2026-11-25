@@ -130,9 +130,12 @@ class NotificacionesViewModel extends ChangeNotifier {
 
   /// Lo llama el botón "Activar avisos": el permiso se pide en
   /// contexto, cuando el usuario sabe para qué es.
-  Future<void> pedirPermiso() async {
+  /// Devuelve si quedó dado: el que lo llama puede explicar qué hacer si
+  /// el teléfono lo tiene bloqueado.
+  Future<bool> pedirPermiso() async {
     _tienePermiso = await _repositorio.pedirPermiso();
     notifyListeners();
+    return _tienePermiso;
   }
 
   List<Notificacion> para(String destinatario) =>

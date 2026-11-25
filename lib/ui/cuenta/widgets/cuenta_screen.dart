@@ -6,6 +6,7 @@ import '../../core/aviso.dart';
 import '../../core/colores.dart';
 import '../../ingreso/widgets/cerrar_sesion.dart';
 import '../../ingreso/widgets/ingreso_screen.dart';
+import '../../notificaciones/widgets/activar_avisos.dart';
 import '../../notificaciones/widgets/notificaciones_screen.dart';
 import 'editar_perfil_screen.dart';
 
@@ -198,10 +199,16 @@ class _CuentaScreenState extends State<CuentaScreen> {
                       ),
                       value: avisos.tienePermiso,
                       // El permiso se pide acá, cuando la persona lo
-                      // elige. Apagarlo solo se puede desde los Ajustes.
-                      onChanged: avisos.tienePermiso
-                          ? null
-                          : (_) => avisos.pedirPermiso(),
+                      // elige. Apagarlo solo se puede desde los Ajustes:
+                      // si ya está activado, tocarlo lo explica (antes no
+                      // hacía nada y parecía roto).
+                      onChanged: (_) => avisos.tienePermiso
+                          ? avisar(
+                              context,
+                              'Ya están activadas. Para apagarlas, andá a '
+                              'los Ajustes del teléfono.',
+                            )
+                          : activarAvisos(context, avisos),
                     ),
                     // Las PUSH: el token es la "dirección" de este
                     // teléfono en Firebase Cloud Messaging. Se copia y

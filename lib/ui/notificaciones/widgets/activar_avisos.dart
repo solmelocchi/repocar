@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../../../dependencias.dart';
 import '../../core/colores.dart';
+import '../view_models/notificaciones_view_model.dart';
 
 /// El cartel que pide el permiso de notificaciones EN CONTEXTO: dice qué
 /// gana el usuario y pide recién cuando toca el botón. Nunca al abrir la
@@ -42,7 +44,7 @@ class ActivarAvisos extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 FilledButton(
-                  onPressed: vm.pedirPermiso,
+                  onPressed: () => activarAvisos(context, vm),
                   style: FilledButton.styleFrom(
                     minimumSize: const Size(90, 40),
                   ),
@@ -55,4 +57,39 @@ class ActivarAvisos extends StatelessWidget {
       },
     );
   }
+}
+
+/// Pide el permiso de notificaciones y, si no se dio, explica cómo
+/// activarlas.
+///
+/// Por qué: desde Android 13, si alguna vez se tocó "No permitir", el
+/// sistema ya no muestra su cartel. Contesta que no sin preguntar, y sin
+/// esta explicación el botón parecería no hacer nada.
+Future<void> activarAvisos(
+  BuildContext context,
+  NotificacionesViewModel vm,
+) async {
+  final dado = await vm.pedirPermiso();
+  if (dado || !context.mounted) return;
+  await showDialog<void>(
+    context: context,
+    builder: (dialogo) => AlertDialog(
+      title: const Text('Las notificaciones están bloqueadas'),
+      content: Text(
+        kIsWeb
+            ? 'El navegador no deja que RepoCar te avise. Para activarlas, '
+                  'tocá el candado de la barra de direcciones → '
+                  'Notificaciones → Permitir.'
+            : 'El teléfono no deja que RepoCar te avise. Para activarlas: '
+                  'Ajustes → Apps → RepoCar → Notificaciones → Permitir.',
+      ),
+      actions: [
+        FilledButton(
+          onPressed: () => Navigator.pop(dialogo),
+          style: FilledButton.styleFrom(minimumSize: const Size(120, 48)),
+          child: const Text('Entendido'),
+        ),
+      ],
+    ),
+  );
 }
