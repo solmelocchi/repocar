@@ -1,3 +1,5 @@
+import 'dart:ui' show DartPluginRegistrant;
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -40,6 +42,7 @@ const _claveAlTantoHasta = 'pedidos_al_tanto_hasta';
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((tarea, datos) async {
+    DartPluginRegistrant.ensureInitialized();
     try {
       final preferencias = SharedPreferencesAsync();
       final cuit = await preferencias.getString(_claveTaller);
