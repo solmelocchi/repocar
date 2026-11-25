@@ -35,8 +35,15 @@ class _TallerScreenState extends State<TallerScreen> {
   @override
   void initState() {
     super.initState();
-    widget.deps.catalogo.cargar();
-    widget.deps.pedidos.cargar();
+    // Se carga DESPUÉS del primer dibujo: cargar() avisa "cargando" al
+    // instante, y si en ese momento se está cerrando otra pantalla que
+    // escucha al mismo ViewModel (al cambiar de cuenta), avisar en pleno
+    // dibujo es un error de Flutter ("setState() called during build").
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      widget.deps.catalogo.cargar();
+      widget.deps.pedidos.cargar();
+    });
   }
 
   @override

@@ -33,11 +33,18 @@ class _InicioAdminState extends State<InicioAdmin> {
   @override
   void initState() {
     super.initState();
-    widget.deps.pedidos.cargar();
-    // Para el control de preguntas: las piezas (también las pausadas y
-    // borradas) y todas las preguntas.
-    widget.deps.catalogo.cargar();
-    widget.deps.controlDePreguntas.iniciar();
+    // Se carga DESPUÉS del primer dibujo: cargar() avisa "cargando" al
+    // instante, y si en ese momento se está cerrando otra pantalla que
+    // escucha al mismo ViewModel (al cambiar de cuenta), avisar en pleno
+    // dibujo es un error de Flutter ("setState() called during build").
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      widget.deps.pedidos.cargar();
+      // Para el control de preguntas: las piezas (también las pausadas y
+      // borradas) y todas las preguntas.
+      widget.deps.catalogo.cargar();
+      widget.deps.controlDePreguntas.iniciar();
+    });
   }
 
   @override
