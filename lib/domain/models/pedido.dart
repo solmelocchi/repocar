@@ -51,7 +51,15 @@ class Calificacion {
 class Pedido {
   final String numero;
   final DateTime fecha;
+
+  /// El nombre del comprador, para mostrarlo.
   final String cliente;
+
+  /// QUIÉN lo compró: el usuario (mail) de su cuenta, que es único. El
+  /// nombre no sirve para eso: dos personas pueden llamarse igual, y sus
+  /// pedidos se mezclarían.
+  final String? clienteUsuario;
+
   final Taller taller;
   final List<ItemCarrito> items;
   final MetodoEntrega entrega;
@@ -76,6 +84,7 @@ class Pedido {
     required this.numero,
     required this.fecha,
     required this.cliente,
+    this.clienteUsuario,
     required this.taller,
     required this.items,
     required this.entrega,

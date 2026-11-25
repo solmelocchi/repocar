@@ -101,7 +101,7 @@ class PedidosViewModel extends ChangeNotifier {
         // barra queda un solo aviso por pedido.
         final retira = pedido.entrega == MetodoEntrega.retiro;
         await _notificaciones.avisar(
-          para: pedido.cliente,
+          para: pedido.clienteUsuario ?? pedido.cliente,
           titulo: retira
               ? 'Tu pedido ${pedido.numero} está listo'
               : 'Tu pedido ${pedido.numero} está en camino',
@@ -115,7 +115,7 @@ class PedidosViewModel extends ChangeNotifier {
       case TipoDeCambio.estado when pedido.estado == EstadoPedido.entregado:
         // Cuando llega, el comprador se entera y ya puede calificar.
         await _notificaciones.avisar(
-          para: pedido.cliente,
+          para: pedido.clienteUsuario ?? pedido.cliente,
           titulo: 'Tu pedido ${pedido.numero} llegó',
           texto: 'Ya podés calificar a ${pedido.taller.nombre}.',
           payload: 'pedido:${pedido.numero}',
@@ -160,13 +160,14 @@ class PedidosViewModel extends ChangeNotifier {
 
   List<Pedido> deTaller(Taller taller) => _repositorio.deTaller(taller);
 
-  List<Pedido> deCliente(String nombre) => _repositorio.deCliente(nombre);
+  List<Pedido> deCliente(String usuario) => _repositorio.deCliente(usuario);
 
   /// Comando: confirma la compra y devuelve un pedido por taller.
   Future<List<Pedido>> confirmarCompra(
     List<CompraTaller> compras,
-    String cliente,
-  ) => _repositorio.confirmarCompra(compras, cliente);
+    String cliente, {
+    String? usuario,
+  }) => _repositorio.confirmarCompra(compras, cliente, usuario: usuario);
 
   Future<void> cambiarEstado(Pedido pedido, EstadoPedido estado) =>
       _repositorio.cambiarEstado(pedido, estado);

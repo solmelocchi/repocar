@@ -52,16 +52,28 @@ service cloud.firestore {
       allow delete: if false; // borrar es marcarla "borrada"
     }
 
+    // ¿El que pide es el comprador de este pedido? Cada pedido guarda el
+    // usuario (mail) de quien lo compró. Los pedidos de antes no lo
+    // guardaban: esos los puede tocar quien tenga cuenta, como antes.
+    function esElComprador(pedido) {
+      return pedido.get('cliente_usuario', null) == null
+        || pedido.cliente_usuario == request.auth.token.email.lower();
+    }
+
     // PEDIDOS: los ve quien tiene cuenta. Los crea quien compra. El estado
-    // y la respuesta los cambia el taller del pedido; la calificación,
-    // cualquiera con cuenta (no puede tocar nada más).
+    // y la respuesta los cambia el taller del pedido; la calificación y
+    // el arrepentimiento, SOLO su comprador (y nada más del pedido). Al
+    // tocar un pedido viejo se le anota el comprador: solo puede ser él.
     match /pedidos/{numero} {
       allow read: if adentro();
       allow create: if adentro();
       allow update: if esElTaller(resource.data.taller_cuit)
         || esAdmin()
         || (adentro()
-            && soloCambia(['calificacion', 'arrepentido_el', 'entregado_el']));
+            && esElComprador(resource.data)
+            && soloCambia(['calificacion', 'arrepentido_el', 'entregado_el', 'cliente_usuario'])
+            && request.resource.data.get('cliente_usuario', null)
+                 in [null, request.auth.token.email.lower()]);
       allow delete: if false;
     }
 

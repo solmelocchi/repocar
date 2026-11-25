@@ -109,8 +109,7 @@ class _RepoCarAppState extends State<RepoCarApp> with WidgetsBindingObserver {
   void _abrirBandeja() {
     final sesion = _deps.sesion;
     final para =
-        sesion.taller?.cuit ??
-        (sesion.hayCliente ? sesion.nombreComprador : null);
+        sesion.taller?.cuit ?? (sesion.hayCliente ? sesion.idComprador : null);
     if (para == null) return; // nadie entró todavía
 
     _navegador.currentState?.push(

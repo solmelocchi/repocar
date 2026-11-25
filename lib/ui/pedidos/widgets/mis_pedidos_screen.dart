@@ -51,7 +51,7 @@ class _MisPedidosScreenState extends State<MisPedidosScreen> {
   }
 
   Widget _lista(PedidosViewModel vm) {
-    final mios = vm.deCliente(widget.deps.sesion.nombreComprador);
+    final mios = vm.deCliente(widget.deps.sesion.idComprador ?? '');
 
     if (mios.isEmpty) {
       return const Center(

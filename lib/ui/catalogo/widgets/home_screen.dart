@@ -79,7 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           BotonNotificaciones(
             deps: widget.deps,
-            para: widget.deps.sesion.nombreComprador,
+            para:
+                widget.deps.sesion.idComprador ??
+                widget.deps.sesion.nombreComprador,
           ),
           const SizedBox(width: 4),
         ],

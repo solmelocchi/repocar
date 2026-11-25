@@ -193,8 +193,7 @@ class Dependencias {
     // llega un mensaje.
     late final SesionViewModel sesion;
     String? quienEntro() =>
-        sesion.taller?.cuit ??
-        (sesion.hayCliente ? sesion.nombreComprador : null);
+        sesion.taller?.cuit ?? (sesion.hayCliente ? sesion.idComprador : null);
 
     final notificaciones = NotificacionesViewModel(
       repositorio: notificacionesRepo,
@@ -230,7 +229,7 @@ class Dependencias {
       if (taller != null) {
         misPreguntas.seguirTaller(taller.cuit);
       } else if (sesion.hayCliente) {
-        misPreguntas.seguirComprador(sesion.nombreComprador);
+        misPreguntas.seguirComprador(sesion.idComprador!);
       } else {
         misPreguntas.dejar();
       }

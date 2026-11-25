@@ -130,6 +130,11 @@ class PedidosRepository {
       numero: crudo['numero'] as String,
       fecha: fecha,
       cliente: crudo['cliente'] as String,
+      // Los pedidos de antes no lo guardaban: se busca por el nombre.
+      clienteUsuario:
+          ((crudo['cliente_usuario'] as String?) ??
+                  _cuentas.usuarioDeNombre(crudo['cliente'] as String))
+              ?.toLowerCase(),
       taller: taller,
       items: items,
       entrega: _entregaDesde(crudo['entrega'] as String),
@@ -218,10 +223,13 @@ class PedidosRepository {
 
   /// Arma un pedido por cada taller de la compra, lo da por pagado, lo
   /// guarda, y deja vendidos los repuestos: son usados, hay uno solo.
+  /// [cliente] es el nombre (para mostrar) y [usuario], quién compra.
   Future<List<Pedido>> confirmarCompra(
     List<CompraTaller> compras,
-    String cliente,
-  ) async {
+    String cliente, {
+    String? usuario,
+  }) async {
+    final quien = (usuario ?? _cuentas.usuarioDeNombre(cliente))?.toLowerCase();
     await obtenerPedidos();
 
     // Última barrera: si alguna pieza ya no está a la venta (otro la
@@ -250,6 +258,7 @@ class PedidosRepository {
         numero: '#$_ultimoNumero',
         fecha: DateTime.now(),
         cliente: cliente,
+        clienteUsuario: quien,
         taller: compra.taller,
         items: compra.items,
         entrega: compra.entrega,
@@ -316,8 +325,10 @@ class PedidosRepository {
       _pedidos.where((p) => p.taller.cuit == taller.cuit).toList()
         ..sort((a, b) => b.fecha.compareTo(a.fecha));
 
-  List<Pedido> deCliente(String nombre) =>
-      _pedidos.where((p) => p.cliente == nombre).toList()
+  /// Los pedidos de UN comprador, por su usuario (no por el nombre: dos
+  /// personas pueden llamarse igual).
+  List<Pedido> deCliente(String usuario) =>
+      _pedidos.where((p) => p.clienteUsuario == usuario.toLowerCase()).toList()
         ..sort((a, b) => b.fecha.compareTo(a.fecha));
 
   /// Los pedidos desde una fecha (null: todos). Es lo que mira TalleresYa
@@ -333,6 +344,7 @@ class PedidosRepository {
       'numero': pedido.numero,
       'fecha': pedido.fecha.toIso8601String(),
       'cliente': pedido.cliente,
+      'cliente_usuario': pedido.clienteUsuario,
       'taller_cuit': pedido.taller.cuit,
       'items': [
         for (final item in pedido.items)

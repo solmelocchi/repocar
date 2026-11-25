@@ -103,6 +103,7 @@ class _PagoScreenState extends State<PagoScreen> {
       nuevos = await widget.deps.pedidos.confirmarCompra(
         widget.compras,
         widget.deps.sesion.nombreComprador,
+        usuario: widget.deps.sesion.idComprador,
       );
     } on PiezaNoDisponible catch (error) {
       // Otro comprador se la llevó justo mientras se procesaba el pago.

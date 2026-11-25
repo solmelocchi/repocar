@@ -31,7 +31,10 @@ class _CuentaScreenState extends State<CuentaScreen> {
   Dependencias get _deps => widget.deps;
 
   /// A quién van dirigidos sus avisos: el CUIT o el nombre.
-  String get _para => _deps.sesion.taller?.cuit ?? _deps.sesion.nombreComprador;
+  String get _para =>
+      _deps.sesion.taller?.cuit ??
+      _deps.sesion.idComprador ??
+      _deps.sesion.nombreComprador;
 
   @override
   Widget build(BuildContext context) {

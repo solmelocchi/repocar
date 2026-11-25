@@ -196,7 +196,7 @@ void main() {
       final pedido = await comprarAlternador(app.pedidos, app.catalogo);
 
       final despues = await abrir();
-      final recuperado = despues.pedidos.deCliente('Sol Melocchi').single;
+      final recuperado = despues.pedidos.deCliente('sol@gmail.com').single;
 
       expect(recuperado.numero, pedido.numero);
       expect(recuperado.total, pedido.total);
@@ -214,7 +214,7 @@ void main() {
         await app.pedidos.responder(pedido, 'Gracias por la compra');
 
         final despues = await abrir();
-        final recuperado = despues.pedidos.deCliente('Sol Melocchi').single;
+        final recuperado = despues.pedidos.deCliente('sol@gmail.com').single;
 
         expect(recuperado.estado, EstadoPedido.entregado);
         expect(recuperado.calificacion!.estrellas, 4);
@@ -261,7 +261,7 @@ void main() {
 
       expect(segundo.numero, isNot(primero.numero));
       final otraVez = await abrir();
-      expect(otraVez.pedidos.deCliente('Sol Melocchi').length, 2);
+      expect(otraVez.pedidos.deCliente('sol@gmail.com').length, 2);
     });
 
     test('marcar en camino un pedido de ejemplo también se guarda', () async {

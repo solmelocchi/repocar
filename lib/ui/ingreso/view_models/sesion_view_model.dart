@@ -61,6 +61,10 @@ class SesionViewModel extends ChangeNotifier {
   /// Con qué nombre se guardan los pedidos que se hacen ahora.
   String get nombreComprador => _cliente?.nombre ?? 'Invitado';
 
+  /// QUIÉN es el comprador: su usuario, que es único (el nombre se puede
+  /// repetir). Con esto se eligen sus pedidos y sus avisos.
+  String? get idComprador => _cliente?.usuario.toLowerCase();
+
   List<String> get zonasDisponibles => _repositorio.zonasDisponibles;
 
   List<Taller> get talleres => _repositorio.talleres;

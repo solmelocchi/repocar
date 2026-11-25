@@ -46,6 +46,16 @@ class CuentasRepository {
 
   List<Cliente> get clientes => List.unmodifiable(_clientes);
 
+  /// El usuario de la PRIMERA cuenta con ese nombre (la más vieja). Sirve
+  /// para los pedidos de antes, que guardaban solo el nombre: se los
+  /// queda la cuenta que ya existía cuando se hicieron.
+  String? usuarioDeNombre(String nombre) {
+    for (final cliente in _clientes) {
+      if (cliente.nombre == nombre) return cliente.usuario;
+    }
+    return null;
+  }
+
   /// Las zonas entre las que elige un taller al registrarse.
   List<String> get zonasDisponibles => zonasDeTaller;
 
