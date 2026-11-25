@@ -141,6 +141,12 @@ class VehiculosFake implements VehiculosRepository {
   Future<List<ZonaEnvio>> obtenerZonas() async => const [
     ZonaEnvio('San Rafael centro', 5, 3800),
   ];
+
+  /// Para simular que por atrás llegó una lista más nueva.
+  final nuevas = StreamController<List<ModeloVehiculo>>.broadcast();
+
+  @override
+  Stream<List<ModeloVehiculo>> get actualizaciones => nuevas.stream;
 }
 
 /// Un repositorio que siempre falla, para probar el estado de error.
@@ -152,6 +158,9 @@ class VehiculosQueFalla implements VehiculosRepository {
   @override
   Future<List<ZonaEnvio>> obtenerZonas() async =>
       throw Exception('se cayó la red');
+
+  @override
+  Stream<List<ModeloVehiculo>> get actualizaciones => const Stream.empty();
 }
 
 /// Firebase Authentication de mentira: cuentas en un mapa (mail → clave).

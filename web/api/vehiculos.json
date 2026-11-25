@@ -1,33 +1,39 @@
 [
   {
-    "marca": "Volkswagen",
-    "modelo": "Gol Trend",
-    "desde": 2008,
+    "marca": "Chevrolet",
+    "modelo": "Agile",
+    "desde": 2009,
     "hasta": 2016
   },
   {
-    "marca": "Volkswagen",
-    "modelo": "Amarok",
-    "desde": 2010,
-    "hasta": 2022
+    "marca": "Chevrolet",
+    "modelo": "Aveo",
+    "desde": 2008,
+    "hasta": 2012
   },
   {
-    "marca": "Volkswagen",
-    "modelo": "Suran",
+    "marca": "Chevrolet",
+    "modelo": "Celta",
     "desde": 2006,
-    "hasta": 2019
-  },
-  {
-    "marca": "Volkswagen",
-    "modelo": "Polo",
-    "desde": 2017,
-    "hasta": 2024
+    "hasta": 2015
   },
   {
     "marca": "Chevrolet",
     "modelo": "Corsa Classic",
     "desde": 2000,
     "hasta": 2013
+  },
+  {
+    "marca": "Chevrolet",
+    "modelo": "Cruze",
+    "desde": 2016,
+    "hasta": 2023
+  },
+  {
+    "marca": "Chevrolet",
+    "modelo": "Montana",
+    "desde": 2023,
+    "hasta": 2025
   },
   {
     "marca": "Chevrolet",
@@ -48,87 +54,63 @@
     "hasta": 2023
   },
   {
-    "marca": "Ford",
-    "modelo": "Fiesta Kinetic",
-    "desde": 2011,
-    "hasta": 2019
-  },
-  {
-    "marca": "Ford",
-    "modelo": "Ranger",
+    "marca": "Chevrolet",
+    "modelo": "Spin",
     "desde": 2012,
-    "hasta": 2022
+    "hasta": 2025
   },
   {
-    "marca": "Ford",
-    "modelo": "Ka",
-    "desde": 2016,
-    "hasta": 2021
+    "marca": "Chevrolet",
+    "modelo": "Tracker",
+    "desde": 2013,
+    "hasta": 2025
   },
   {
-    "marca": "Ford",
-    "modelo": "EcoSport",
+    "marca": "Citroën",
+    "modelo": "Berlingo",
+    "desde": 1998,
+    "hasta": 2025
+  },
+  {
+    "marca": "Citroën",
+    "modelo": "C3",
+    "desde": 2003,
+    "hasta": 2025
+  },
+  {
+    "marca": "Citroën",
+    "modelo": "C4 Cactus",
+    "desde": 2018,
+    "hasta": 2024
+  },
+  {
+    "marca": "Citroën",
+    "modelo": "C4 Lounge",
     "desde": 2013,
     "hasta": 2021
   },
   {
-    "marca": "Renault",
-    "modelo": "Clio Mío",
-    "desde": 2000,
-    "hasta": 2016
-  },
-  {
-    "marca": "Renault",
-    "modelo": "Kangoo",
-    "desde": 2008,
-    "hasta": 2018
-  },
-  {
-    "marca": "Renault",
-    "modelo": "Sandero",
-    "desde": 2008,
-    "hasta": 2022
-  },
-  {
-    "marca": "Renault",
-    "modelo": "Duster",
-    "desde": 2012,
-    "hasta": 2022
-  },
-  {
-    "marca": "Toyota",
-    "modelo": "Hilux",
-    "desde": 2012,
-    "hasta": 2020
-  },
-  {
-    "marca": "Toyota",
-    "modelo": "Etios",
-    "desde": 2013,
-    "hasta": 2023
-  },
-  {
-    "marca": "Toyota",
-    "modelo": "Corolla",
-    "desde": 2014,
-    "hasta": 2023
-  },
-  {
-    "marca": "Peugeot",
-    "modelo": "208",
-    "desde": 2013,
-    "hasta": 2022
-  },
-  {
-    "marca": "Peugeot",
-    "modelo": "Partner",
-    "desde": 2008,
-    "hasta": 2020
+    "marca": "Fiat",
+    "modelo": "Argo",
+    "desde": 2017,
+    "hasta": 2025
   },
   {
     "marca": "Fiat",
     "modelo": "Cronos",
     "desde": 2018,
+    "hasta": 2024
+  },
+  {
+    "marca": "Fiat",
+    "modelo": "Fiorino",
+    "desde": 1998,
+    "hasta": 2025
+  },
+  {
+    "marca": "Fiat",
+    "modelo": "Mobi",
+    "desde": 2017,
     "hasta": 2024
   },
   {
@@ -139,8 +121,386 @@
   },
   {
     "marca": "Fiat",
+    "modelo": "Pulse",
+    "desde": 2022,
+    "hasta": 2025
+  },
+  {
+    "marca": "Fiat",
+    "modelo": "Punto",
+    "desde": 2007,
+    "hasta": 2017
+  },
+  {
+    "marca": "Fiat",
+    "modelo": "Siena",
+    "desde": 2001,
+    "hasta": 2017
+  },
+  {
+    "marca": "Fiat",
+    "modelo": "Strada",
+    "desde": 1998,
+    "hasta": 2025
+  },
+  {
+    "marca": "Fiat",
     "modelo": "Toro",
     "desde": 2016,
     "hasta": 2024
+  },
+  {
+    "marca": "Fiat",
+    "modelo": "Uno",
+    "desde": 2004,
+    "hasta": 2014
+  },
+  {
+    "marca": "Ford",
+    "modelo": "Bronco Sport",
+    "desde": 2021,
+    "hasta": 2025
+  },
+  {
+    "marca": "Ford",
+    "modelo": "EcoSport",
+    "desde": 2013,
+    "hasta": 2021
+  },
+  {
+    "marca": "Ford",
+    "modelo": "Fiesta",
+    "desde": 2003,
+    "hasta": 2013
+  },
+  {
+    "marca": "Ford",
+    "modelo": "Fiesta Kinetic",
+    "desde": 2011,
+    "hasta": 2019
+  },
+  {
+    "marca": "Ford",
+    "modelo": "Focus",
+    "desde": 2008,
+    "hasta": 2019
+  },
+  {
+    "marca": "Ford",
+    "modelo": "Ka",
+    "desde": 2016,
+    "hasta": 2021
+  },
+  {
+    "marca": "Ford",
+    "modelo": "Maverick",
+    "desde": 2022,
+    "hasta": 2025
+  },
+  {
+    "marca": "Ford",
+    "modelo": "Ranger",
+    "desde": 2012,
+    "hasta": 2022
+  },
+  {
+    "marca": "Ford",
+    "modelo": "Territory",
+    "desde": 2020,
+    "hasta": 2025
+  },
+  {
+    "marca": "Honda",
+    "modelo": "City",
+    "desde": 2009,
+    "hasta": 2021
+  },
+  {
+    "marca": "Honda",
+    "modelo": "Civic",
+    "desde": 2006,
+    "hasta": 2021
+  },
+  {
+    "marca": "Honda",
+    "modelo": "Fit",
+    "desde": 2003,
+    "hasta": 2021
+  },
+  {
+    "marca": "Honda",
+    "modelo": "HR-V",
+    "desde": 2015,
+    "hasta": 2025
+  },
+  {
+    "marca": "Jeep",
+    "modelo": "Compass",
+    "desde": 2017,
+    "hasta": 2025
+  },
+  {
+    "marca": "Jeep",
+    "modelo": "Renegade",
+    "desde": 2016,
+    "hasta": 2025
+  },
+  {
+    "marca": "Nissan",
+    "modelo": "Frontier",
+    "desde": 2008,
+    "hasta": 2025
+  },
+  {
+    "marca": "Nissan",
+    "modelo": "Kicks",
+    "desde": 2017,
+    "hasta": 2025
+  },
+  {
+    "marca": "Nissan",
+    "modelo": "March",
+    "desde": 2011,
+    "hasta": 2021
+  },
+  {
+    "marca": "Nissan",
+    "modelo": "Versa",
+    "desde": 2011,
+    "hasta": 2025
+  },
+  {
+    "marca": "Peugeot",
+    "modelo": "2008",
+    "desde": 2016,
+    "hasta": 2025
+  },
+  {
+    "marca": "Peugeot",
+    "modelo": "206",
+    "desde": 1999,
+    "hasta": 2013
+  },
+  {
+    "marca": "Peugeot",
+    "modelo": "207",
+    "desde": 2008,
+    "hasta": 2016
+  },
+  {
+    "marca": "Peugeot",
+    "modelo": "208",
+    "desde": 2013,
+    "hasta": 2022
+  },
+  {
+    "marca": "Peugeot",
+    "modelo": "307",
+    "desde": 2002,
+    "hasta": 2012
+  },
+  {
+    "marca": "Peugeot",
+    "modelo": "308",
+    "desde": 2012,
+    "hasta": 2022
+  },
+  {
+    "marca": "Peugeot",
+    "modelo": "408",
+    "desde": 2010,
+    "hasta": 2022
+  },
+  {
+    "marca": "Peugeot",
+    "modelo": "Partner",
+    "desde": 2008,
+    "hasta": 2020
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Captur",
+    "desde": 2017,
+    "hasta": 2023
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Clio Mío",
+    "desde": 2000,
+    "hasta": 2016
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Duster",
+    "desde": 2012,
+    "hasta": 2022
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Fluence",
+    "desde": 2011,
+    "hasta": 2018
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Kangoo",
+    "desde": 2008,
+    "hasta": 2018
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Kwid",
+    "desde": 2017,
+    "hasta": 2025
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Logan",
+    "desde": 2007,
+    "hasta": 2022
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Mégane",
+    "desde": 1997,
+    "hasta": 2010
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Oroch",
+    "desde": 2016,
+    "hasta": 2025
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Sandero",
+    "desde": 2008,
+    "hasta": 2022
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Stepway",
+    "desde": 2009,
+    "hasta": 2025
+  },
+  {
+    "marca": "Renault",
+    "modelo": "Symbol",
+    "desde": 2009,
+    "hasta": 2013
+  },
+  {
+    "marca": "Toyota",
+    "modelo": "Corolla",
+    "desde": 2014,
+    "hasta": 2023
+  },
+  {
+    "marca": "Toyota",
+    "modelo": "Corolla Cross",
+    "desde": 2021,
+    "hasta": 2025
+  },
+  {
+    "marca": "Toyota",
+    "modelo": "Etios",
+    "desde": 2013,
+    "hasta": 2023
+  },
+  {
+    "marca": "Toyota",
+    "modelo": "Hilux",
+    "desde": 2012,
+    "hasta": 2020
+  },
+  {
+    "marca": "Toyota",
+    "modelo": "SW4",
+    "desde": 2005,
+    "hasta": 2025
+  },
+  {
+    "marca": "Toyota",
+    "modelo": "Yaris",
+    "desde": 2018,
+    "hasta": 2025
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Amarok",
+    "desde": 2010,
+    "hasta": 2022
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Bora",
+    "desde": 2000,
+    "hasta": 2015
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Fox",
+    "desde": 2004,
+    "hasta": 2021
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Gol",
+    "desde": 1994,
+    "hasta": 2014
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Gol Trend",
+    "desde": 2008,
+    "hasta": 2016
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Polo",
+    "desde": 2017,
+    "hasta": 2024
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Saveiro",
+    "desde": 2010,
+    "hasta": 2025
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Suran",
+    "desde": 2006,
+    "hasta": 2019
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "T-Cross",
+    "desde": 2019,
+    "hasta": 2025
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Taos",
+    "desde": 2021,
+    "hasta": 2025
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Up!",
+    "desde": 2014,
+    "hasta": 2021
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Vento",
+    "desde": 2006,
+    "hasta": 2019
+  },
+  {
+    "marca": "Volkswagen",
+    "modelo": "Virtus",
+    "desde": 2018,
+    "hasta": 2025
   }
 ]

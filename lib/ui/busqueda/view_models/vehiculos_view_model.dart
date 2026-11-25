@@ -1,5 +1,7 @@
 // El ViewModel importa foundation (por ChangeNotifier), NO material:
 // no conoce widgets ni BuildContext.
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../../../data/repositories/vehiculos_repository.dart';
@@ -14,9 +16,18 @@ import '../../core/estado_carga.dart';
 // =====================================================================
 class VehiculosViewModel extends ChangeNotifier {
   VehiculosViewModel({required VehiculosRepository repositorio})
-    : _repositorio = repositorio;
+    : _repositorio = repositorio {
+    // Si por atrás llega una lista más nueva, la pantalla se actualiza
+    // sola (el repositorio avisa por un Stream).
+    _suscripcion = _repositorio.actualizaciones.listen((nuevos) {
+      _vehiculos = nuevos;
+      _estado = EstadoCarga.exito;
+      notifyListeners();
+    });
+  }
 
   final VehiculosRepository _repositorio;
+  late final StreamSubscription<List<ModeloVehiculo>> _suscripcion;
 
   EstadoCarga _estado = EstadoCarga.cargando;
   EstadoCarga get estado => _estado;
@@ -55,5 +66,11 @@ class VehiculosViewModel extends ChangeNotifier {
       // error, o alguien lo cambiara por un "on" que no atrape todo).
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    _suscripcion.cancel();
+    super.dispose();
   }
 }
