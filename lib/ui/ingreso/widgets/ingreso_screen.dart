@@ -120,7 +120,7 @@ class _IngresoScreenState extends State<IngresoScreen> {
             const Text(
               'Repuestos usados y reacondicionados\nde los talleres de tu zona',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: Colors.black54),
+              style: TextStyle(fontSize: 13, color: grisTexto),
             ),
             const SizedBox(height: 28),
 
@@ -219,7 +219,7 @@ class _IngresoScreenState extends State<IngresoScreen> {
               children: [
                 const Text(
                   '¿No tenés cuenta?',
-                  style: TextStyle(color: Colors.black54),
+                  style: TextStyle(color: grisTexto),
                 ),
                 TextButton(
                   onPressed: _registrarse,
@@ -245,6 +245,8 @@ class _IngresoScreenState extends State<IngresoScreen> {
       borderRadius: BorderRadius.circular(8),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
+        // 48 de alto como mínimo: el tamaño para tocar sin errarle.
+        constraints: const BoxConstraints(minHeight: 48),
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           color: activo ? azul : Colors.transparent,
@@ -253,11 +255,7 @@ class _IngresoScreenState extends State<IngresoScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icono,
-              size: 18,
-              color: activo ? Colors.white : Colors.black54,
-            ),
+            Icon(icono, size: 18, color: activo ? Colors.white : grisTexto),
             const SizedBox(width: 6),
             Flexible(
               child: Text(
@@ -266,7 +264,7 @@ class _IngresoScreenState extends State<IngresoScreen> {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: activo ? Colors.white : Colors.black54,
+                  color: activo ? Colors.white : grisTexto,
                 ),
               ),
             ),
@@ -287,14 +285,14 @@ class _IngresoScreenState extends State<IngresoScreen> {
         children: [
           const Row(
             children: [
-              Icon(Icons.lightbulb_outline, size: 18, color: Colors.black45),
+              Icon(Icons.lightbulb_outline, size: 18, color: grisTexto),
               SizedBox(width: 8),
               Text(
                 'Para probar',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black54,
+                  color: grisTexto,
                 ),
               ),
             ],
@@ -308,7 +306,7 @@ class _IngresoScreenState extends State<IngresoScreen> {
                       'Todos entran con la clave 123456.'
                 : 'sol@gmail.com · 123456\n'
                       'TalleresYa (panel): admin@talleresya.com · 123456',
-            style: const TextStyle(fontSize: 12, color: Colors.black54),
+            style: const TextStyle(fontSize: 12, color: grisTexto),
           ),
         ],
       ),

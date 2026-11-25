@@ -31,7 +31,7 @@ class ControlDePreguntas extends StatelessWidget {
             const Text(
               'Para controlar que las consultas, y las ventas, queden en '
               'RepoCar.',
-              style: TextStyle(fontSize: 12, color: Colors.black54),
+              style: TextStyle(fontSize: 12, color: grisTexto),
             ),
             const SizedBox(height: 10),
             Card(
@@ -53,7 +53,7 @@ class ControlDePreguntas extends StatelessWidget {
               const Text(
                 'Nada para revisar: ninguna publicación con preguntas se '
                 'sacó sin venderse.',
-                style: TextStyle(fontSize: 13, color: Colors.black54),
+                style: TextStyle(fontSize: 13, color: grisTexto),
               )
             else ...[
               const Text(
@@ -63,7 +63,7 @@ class ControlDePreguntas extends StatelessWidget {
               const Text(
                 'Tuvieron preguntas y no se vendieron por la app. Puede ser '
                 'normal, o una venta por fuera.',
-                style: TextStyle(fontSize: 12, color: Colors.black54),
+                style: TextStyle(fontSize: 12, color: grisTexto),
               ),
               const SizedBox(height: 6),
               for (final senal in paraRevisar)

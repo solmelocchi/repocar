@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../dependencias.dart';
 import '../../inicio/widgets/inicio_comprador.dart';
 import '../../core/aviso.dart';
+import '../../core/colores.dart';
 
 /// El alta de un comprador. Pide poco a propósito: comprar lo puede
 /// hacer cualquiera, el que tiene que demostrar quién es es el taller.
@@ -71,7 +72,7 @@ class _RegistroClienteScreenState extends State<RegistroClienteScreen> {
             const Text(
               'Con una cuenta seguís tus pedidos y podés calificar al taller '
               'cuando te llega el repuesto.',
-              style: TextStyle(fontSize: 13, color: Colors.black54),
+              style: TextStyle(fontSize: 13, color: grisTexto),
             ),
             const SizedBox(height: 20),
             TextFormField(

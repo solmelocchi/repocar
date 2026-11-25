@@ -4,6 +4,7 @@ import '../../../dependencias.dart';
 import '../../../domain/models/auto.dart';
 import 'boton_carrito.dart';
 import 'pieza_card.dart';
+import '../../core/colores.dart';
 
 /// Las piezas que le sirven a ese auto.
 class ResultadosScreen extends StatelessWidget {
@@ -52,7 +53,7 @@ class ResultadosScreen extends StatelessWidget {
                   '${piezas.length} repuestos compatibles',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.black54,
+                    color: grisTexto,
                   ),
                 );
               }

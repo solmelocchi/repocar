@@ -209,7 +209,7 @@ class DetalleScreen extends StatelessWidget {
     const Text(
       'Es un repuesto usado: hay una sola unidad.',
       textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 12, color: Colors.black45),
+      style: TextStyle(fontSize: 12, color: grisTexto),
     ),
   ];
 
@@ -218,7 +218,7 @@ class DetalleScreen extends StatelessWidget {
       const Text(
         'Esta pieza ya se vendió: queda en tu lista para que veas el '
         'pedido, pero no se puede editar.',
-        style: TextStyle(fontSize: 13, color: Colors.black54),
+        style: TextStyle(fontSize: 13, color: grisTexto),
       )
     else ...[
       if (pieza.pausada)

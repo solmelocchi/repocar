@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'colores.dart';
+
 /// Lo que se muestra mientras el Future no terminó.
 class VistaCargando extends StatelessWidget {
   final String mensaje;
@@ -14,7 +16,7 @@ class VistaCargando extends StatelessWidget {
         children: [
           const CircularProgressIndicator(),
           const SizedBox(height: 14),
-          Text(mensaje, style: const TextStyle(color: Colors.black54)),
+          Text(mensaje, style: const TextStyle(color: grisTexto)),
         ],
       ),
     );
@@ -46,7 +48,7 @@ class VistaError extends StatelessWidget {
             Text(
               mensaje,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.black54),
+              style: const TextStyle(color: grisTexto),
             ),
             const SizedBox(height: 16),
             OutlinedButton.icon(

@@ -111,7 +111,7 @@ class DetallePedidoScreen extends StatelessWidget {
           'Comprado el ${pedido.fecha.day}/${pedido.fecha.month}/'
           '${pedido.fecha.year}',
           textAlign: TextAlign.end,
-          style: const TextStyle(fontSize: 12, color: Colors.black54),
+          style: const TextStyle(fontSize: 12, color: grisTexto),
         ),
       ),
     ],
@@ -135,7 +135,7 @@ class DetallePedidoScreen extends StatelessWidget {
                 EstadoPedido.values[i].texto,
                 style: TextStyle(
                   fontWeight: i == actual ? FontWeight.bold : FontWeight.normal,
-                  color: i <= actual ? Colors.black87 : Colors.black45,
+                  color: i <= actual ? Colors.black87 : grisTexto,
                 ),
               ),
             ],
@@ -144,52 +144,51 @@ class DetallePedidoScreen extends StatelessWidget {
     ]);
   }
 
-  Widget _productos(BuildContext context) =>
-      _seccion(comoTaller ? 'Qué te pidieron' : 'Qué compraste', [
-        for (final item in pedido.items)
-          InkWell(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => DetalleScreen(pieza: item.pieza, deps: deps),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Row(
-                children: [
-                  FotoPieza(
-                    pieza: item.pieza,
-                    ancho: 56,
-                    alto: 56,
-                    radio: 8,
-                    tamanoIcono: 28,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.pieza.titulo,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        Text(
-                          '${item.cantidad} × ${pesos(item.pieza.precio)}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.chevron_right, color: Colors.black26),
-                ],
-              ),
+  Widget _productos(BuildContext context) => _seccion(
+    comoTaller ? 'Qué te pidieron' : 'Qué compraste',
+    [
+      for (final item in pedido.items)
+        InkWell(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => DetalleScreen(pieza: item.pieza, deps: deps),
             ),
           ),
-      ]);
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Row(
+              children: [
+                FotoPieza(
+                  pieza: item.pieza,
+                  ancho: 56,
+                  alto: 56,
+                  radio: 8,
+                  tamanoIcono: 28,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.pieza.titulo,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        '${item.cantidad} × ${pesos(item.pieza.precio)}',
+                        style: const TextStyle(fontSize: 12, color: grisTexto),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right, color: Colors.black26),
+              ],
+            ),
+          ),
+        ),
+    ],
+  );
 
   Widget _entrega() => _seccion('Entrega', [
     Row(
@@ -207,7 +206,7 @@ class DetallePedidoScreen extends StatelessWidget {
       const SizedBox(height: 6),
       Text(
         pedido.direccion,
-        style: const TextStyle(fontSize: 13, color: Colors.black54),
+        style: const TextStyle(fontSize: 13, color: grisTexto),
       ),
     ],
   ]);
@@ -290,7 +289,7 @@ class DetallePedidoScreen extends StatelessWidget {
               // Sin el teléfono: todo se hace por RepoCar.
               Text(
                 pedido.taller.zona,
-                style: const TextStyle(fontSize: 12, color: Colors.black54),
+                style: const TextStyle(fontSize: 12, color: grisTexto),
               ),
             ],
           ),
@@ -325,7 +324,7 @@ class DetallePedidoScreen extends StatelessWidget {
           comoTaller
               ? 'Tu respuesta: ${calificacion.respuesta}'
               : 'El taller respondió: ${calificacion.respuesta}',
-          style: const TextStyle(fontSize: 13, color: Colors.black54),
+          style: const TextStyle(fontSize: 13, color: grisTexto),
         ),
       ],
     ]);
@@ -383,7 +382,7 @@ class DetallePedidoScreen extends StatelessWidget {
           'Vas a poder calificar cuando el taller marque el pedido como '
           'entregado.',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 12, color: Colors.black45),
+          style: TextStyle(fontSize: 12, color: grisTexto),
         ),
       const SizedBox(height: 16),
       _arrepentimiento(context),
@@ -426,7 +425,7 @@ class DetallePedidoScreen extends StatelessWidget {
       return const Text(
         'Ya pasaron los 10 días para arrepentirte de esta compra.',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 12, color: Colors.black45),
+        style: TextStyle(fontSize: 12, color: grisTexto),
       );
     }
     final limite = pedido.limiteParaArrepentirse;
@@ -447,7 +446,7 @@ class DetallePedidoScreen extends StatelessWidget {
               : 'Podés arrepentirte sin dar explicaciones hasta el '
                     '${fechaCorta(limite)} (Ley 24.240).',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 12, color: Colors.black45),
+          style: const TextStyle(fontSize: 12, color: grisTexto),
         ),
       ],
     );

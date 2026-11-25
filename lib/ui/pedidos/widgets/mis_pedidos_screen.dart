@@ -66,7 +66,7 @@ class _MisPedidosScreenState extends State<MisPedidosScreen> {
                 'Todavía no compraste nada.\nBuscá un repuesto para tu auto '
                 'y vas a verlo acá.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(color: grisTexto),
               ),
             ],
           ),
@@ -127,21 +127,21 @@ class _TarjetaPedido extends StatelessWidget {
                   ),
                   Text(
                     '${pedido.fecha.day}/${pedido.fecha.month}',
-                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                    style: const TextStyle(fontSize: 12, color: grisTexto),
                   ),
                 ],
               ),
               const SizedBox(height: 2),
               Text(
                 pedido.taller.nombre,
-                style: const TextStyle(fontSize: 12, color: Colors.black54),
+                style: const TextStyle(fontSize: 12, color: grisTexto),
               ),
               const SizedBox(height: 8),
               Text(pedido.detalle, style: const TextStyle(fontSize: 13)),
               const SizedBox(height: 4),
               Text(
                 '${pedido.entrega.texto} · ${pesos(pedido.total)}',
-                style: const TextStyle(fontSize: 12, color: Colors.black54),
+                style: const TextStyle(fontSize: 12, color: grisTexto),
               ),
               const Divider(height: 20),
 
@@ -166,7 +166,7 @@ class _TarjetaPedido extends StatelessWidget {
                           fontWeight: i == actual
                               ? FontWeight.bold
                               : FontWeight.normal,
-                          color: i <= actual ? Colors.black87 : Colors.black45,
+                          color: i <= actual ? Colors.black87 : grisTexto,
                         ),
                       ),
                     ],
@@ -188,7 +188,7 @@ class _TarjetaPedido extends StatelessWidget {
                     const SizedBox(width: 6),
                     const Text(
                       'Ya lo calificaste',
-                      style: TextStyle(fontSize: 11, color: Colors.black54),
+                      style: TextStyle(fontSize: 11, color: grisTexto),
                     ),
                   ],
                 ),
@@ -197,10 +197,7 @@ class _TarjetaPedido extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 6),
                     child: Text(
                       'El taller te respondió: ${calificacion.respuesta}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: grisTexto),
                     ),
                   ),
               ] else if (pedido.sePuedeCalificar) ...[
@@ -219,7 +216,7 @@ class _TarjetaPedido extends StatelessWidget {
                   child: Text(
                     'Vas a poder calificar cuando el taller marque el pedido '
                     'como entregado.',
-                    style: TextStyle(fontSize: 11, color: Colors.black45),
+                    style: TextStyle(fontSize: 11, color: grisTexto),
                   ),
                 ),
             ],
@@ -288,7 +285,7 @@ class _DialogoCalificarState extends State<DialogoCalificar> {
           const SizedBox(height: 8),
           const Text(
             'El taller va a poder responderte.',
-            style: TextStyle(fontSize: 11, color: Colors.black45),
+            style: TextStyle(fontSize: 11, color: grisTexto),
           ),
         ],
       ),

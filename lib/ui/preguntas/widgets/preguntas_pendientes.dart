@@ -4,6 +4,7 @@ import '../../../dependencias.dart';
 import '../../../domain/models/pregunta.dart';
 import '../../core/aviso.dart';
 import 'preguntas_de_pieza.dart';
+import '../../core/colores.dart';
 
 /// En la pantalla del taller: las preguntas que todavía no respondió.
 /// Si no hay ninguna, no se dibuja nada.
@@ -47,7 +48,7 @@ class PreguntasPendientes extends StatelessWidget {
                 const Text(
                   'Contestá rápido: una pregunta sin respuesta es una venta '
                   'que se puede perder.',
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                  style: TextStyle(fontSize: 12, color: grisTexto),
                 ),
                 const SizedBox(height: 10),
                 for (final pregunta in pendientes)

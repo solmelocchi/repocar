@@ -68,7 +68,7 @@ class CarritoScreen extends StatelessWidget {
                                 item.pieza.taller.nombre,
                                 style: const TextStyle(
                                   fontSize: 12,
-                                  color: Colors.black54,
+                                  color: grisTexto,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -88,8 +88,12 @@ class CarritoScreen extends StatelessWidget {
                 ),
               const Divider(height: 32),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // Wrap y no Row: con la letra grande, el total baja de renglón
+              // en vez de salirse de la pantalla.
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 12,
                 children: [
                   const Text(
                     'Repuestos',
@@ -119,7 +123,7 @@ class CarritoScreen extends StatelessWidget {
                 'En el paso que sigue elegís cómo lo recibís y pagás dentro '
                 'de la app.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: Colors.black45),
+                style: TextStyle(fontSize: 12, color: grisTexto),
               ),
             ],
           );

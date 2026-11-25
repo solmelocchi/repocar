@@ -41,7 +41,7 @@ class PedidoConfirmadoScreen extends StatelessWidget {
                     : 'Se armó un pedido por taller: cada uno prepara y '
                           'entrega lo suyo.',
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.black54),
+                style: const TextStyle(color: grisTexto),
               ),
               const SizedBox(height: 20),
               for (final pedido in nuevos)

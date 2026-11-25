@@ -345,25 +345,35 @@ class _PublicarScreenState extends State<PublicarScreen> {
               const SizedBox(height: 2),
               const Text(
                 'Si no sacás una foto, la publicación muestra este ícono.',
-                style: TextStyle(fontSize: 12, color: Colors.black54),
+                style: TextStyle(fontSize: 13, color: grisTexto),
               ),
               const SizedBox(height: 6),
               Wrap(
                 spacing: 8,
                 children: [
                   for (final clave in clavesDeIconos)
-                    InkWell(
-                      onTap: () => setState(() => _icono = clave),
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: _icono == clave ? azul : azulClaro,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          iconoDe(clave),
-                          color: _icono == clave ? Colors.white : azul,
+                    // Con nombre: el lector de pantalla dice "Frenos y
+                    // embrague" y no solo "botón". Y de 48 x 48, el tamaño
+                    // mínimo para tocarlo sin errarle.
+                    Tooltip(
+                      message: nombresDeRubros[clave] ?? clave,
+                      child: Semantics(
+                        button: true,
+                        selected: _icono == clave,
+                        child: InkWell(
+                          onTap: () => setState(() => _icono = clave),
+                          child: Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: _icono == clave ? azul : azulClaro,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              iconoDe(clave),
+                              color: _icono == clave ? Colors.white : azul,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -379,10 +389,11 @@ class _PublicarScreenState extends State<PublicarScreen> {
               const Text(
                 'Se elige de la lista. Nunca se escribe a mano: por eso la '
                 'búsqueda del comprador funciona.',
-                style: TextStyle(fontSize: 12, color: Colors.black54),
+                style: TextStyle(fontSize: 12, color: grisTexto),
               ),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
+                isExpanded: true,
                 // La key hace que el campo se redibuje si el valor llega
                 // del borrador después del primer cuadro.
                 key: ValueKey('marca-$_marca'),
@@ -404,6 +415,7 @@ class _PublicarScreenState extends State<PublicarScreen> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
+                isExpanded: true,
                 key: ValueKey('modelo-$_marca-$_modelo'),
                 initialValue: _modelo,
                 decoration: const InputDecoration(
@@ -430,6 +442,7 @@ class _PublicarScreenState extends State<PublicarScreen> {
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<int>(
+                      isExpanded: true,
                       key: ValueKey('desde-$_modelo-$_desde'),
                       initialValue: _anios.contains(_desde) ? _desde : null,
                       decoration: const InputDecoration(
@@ -446,6 +459,7 @@ class _PublicarScreenState extends State<PublicarScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: DropdownButtonFormField<int>(
+                      isExpanded: true,
                       key: ValueKey('hasta-$_modelo-$_hasta'),
                       initialValue: _anios.contains(_hasta) ? _hasta : null,
                       decoration: const InputDecoration(
