@@ -63,7 +63,7 @@ class _NotificacionesScreenState extends State<NotificacionesScreen> {
                       SizedBox(height: 12),
                       Text(
                         'Todavía no tenés avisos.',
-                        style: TextStyle(color: Colors.black54),
+                        style: TextStyle(color: grisTexto),
                       ),
                     ],
                   ),
@@ -97,10 +97,7 @@ class _NotificacionesScreenState extends State<NotificacionesScreen> {
                     trailing: Text(
                       '${aviso.fecha.hour.toString().padLeft(2, '0')}:'
                       '${aviso.fecha.minute.toString().padLeft(2, '0')}',
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Colors.black45,
-                      ),
+                      style: const TextStyle(fontSize: 11, color: grisTexto),
                     ),
                     isThreeLine: true,
                   ),

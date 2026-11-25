@@ -174,7 +174,7 @@ class _Resumen extends StatelessWidget {
                 const Text(
                   'Del que más vendió al que menos. Tocá uno para ver sus '
                   'pedidos y cambiar su comisión.',
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                  style: TextStyle(fontSize: 12, color: grisTexto),
                 ),
                 const SizedBox(height: 10),
                 for (final fila in porTaller)
@@ -259,7 +259,7 @@ class _Numero extends StatelessWidget {
                     titulo,
                     style: TextStyle(
                       fontSize: 13,
-                      color: destacado ? Colors.white70 : Colors.black54,
+                      color: destacado ? Colors.white70 : grisTexto,
                     ),
                   ),
                 ),
@@ -384,7 +384,7 @@ class _FilaPedido extends StatelessWidget {
             Text(
               // Un pedido hecho durante la promoción no deja comisión.
               pedido.comisionPct == 0 ? 'sin comisión' : 'comisión',
-              style: const TextStyle(fontSize: 10, color: Colors.black45),
+              style: const TextStyle(fontSize: 10, color: grisTexto),
             ),
           ],
         ),

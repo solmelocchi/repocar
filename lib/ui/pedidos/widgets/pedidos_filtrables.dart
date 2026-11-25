@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/filtro_de_pedidos.dart';
 import '../../../domain/models/pedido.dart';
+import '../../core/colores.dart';
 
 /// Una lista de pedidos con una barra arriba para buscar (por número,
 /// comprador, taller o repuesto), filtrar por estado y ordenar.
@@ -46,7 +47,7 @@ class _PedidosFiltrablesState extends State<PedidosFiltrables> {
         child: Text(
           widget.vacio,
           textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.black54),
+          style: const TextStyle(color: grisTexto),
         ),
       );
     }
@@ -116,7 +117,7 @@ class _PedidosFiltrablesState extends State<PedidosFiltrables> {
             child: Text(
               'Ningún pedido coincide con la búsqueda.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54),
+              style: TextStyle(color: grisTexto),
             ),
           )
         else

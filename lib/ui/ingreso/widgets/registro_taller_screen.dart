@@ -99,7 +99,7 @@ class _RegistroTallerScreenState extends State<RegistroTallerScreen> {
               'Con estos datos verificamos que sos un taller y no un '
               'comprador. El CUIT se valida con su dígito verificador, igual '
               'que en ARCA.',
-              style: TextStyle(fontSize: 13, color: Colors.black54),
+              style: TextStyle(fontSize: 13, color: grisTexto),
             ),
             const SizedBox(height: 20),
             TextFormField(
@@ -154,6 +154,7 @@ class _RegistroTallerScreenState extends State<RegistroTallerScreen> {
             ),
             const SizedBox(height: 14),
             DropdownButtonFormField<String>(
+              isExpanded: true,
               initialValue: _zona,
               decoration: const InputDecoration(
                 labelText: 'Zona',
@@ -197,7 +198,7 @@ class _RegistroTallerScreenState extends State<RegistroTallerScreen> {
                       children: [
                         Icon(
                           _constancia ? Icons.check_circle : Icons.upload_file,
-                          color: _constancia ? verde : Colors.black45,
+                          color: _constancia ? verde : grisTexto,
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -217,7 +218,7 @@ class _RegistroTallerScreenState extends State<RegistroTallerScreen> {
                     const Text(
                       'Sirve la constancia o una factura del taller. En la '
                       'app real se chequea solo contra el padrón de ARCA.',
-                      style: TextStyle(fontSize: 12, color: Colors.black54),
+                      style: TextStyle(fontSize: 12, color: grisTexto),
                     ),
                     const SizedBox(height: 10),
                     OutlinedButton.icon(
@@ -268,7 +269,7 @@ class _RegistroTallerScreenState extends State<RegistroTallerScreen> {
               'Al registrarte aceptás la comisión del 10% de TalleresYa '
               'sobre cada venta.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 11, color: Colors.black45),
+              style: TextStyle(fontSize: 11, color: grisTexto),
             ),
           ],
         ),

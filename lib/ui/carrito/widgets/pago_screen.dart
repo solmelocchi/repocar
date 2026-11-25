@@ -207,10 +207,7 @@ class _PagoScreenState extends State<PagoScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              const Text(
-                'Total a pagar',
-                style: TextStyle(color: Colors.black54),
-              ),
+              const Text('Total a pagar', style: TextStyle(color: grisTexto)),
               Text(
                 pesos(_total),
                 style: const TextStyle(
@@ -313,7 +310,7 @@ class _PagoScreenState extends State<PagoScreen> {
       const Text(
         'El pago se parte solo: a cada taller le entra lo suyo y '
         'TalleresYa retiene su comisión, sin transferencias a mano.',
-        style: TextStyle(fontSize: 12, color: Colors.black54),
+        style: TextStyle(fontSize: 12, color: grisTexto),
       ),
       const SizedBox(height: 10),
       for (final compra in widget.compras)
@@ -352,12 +349,12 @@ class _PagoScreenState extends State<PagoScreen> {
       Text(
         'TalleresYa cobra ${pesos(_comision)} por esta operación. '
         'Aparte, Mercado Pago cobra su propia comisión por el cobro.',
-        style: const TextStyle(fontSize: 11, color: Colors.black45),
+        style: const TextStyle(fontSize: 11, color: grisTexto),
       ),
       const SizedBox(height: 8),
       const Text(
         'Pago de prueba: no se cobra plata de verdad.',
-        style: TextStyle(fontSize: 11, color: Colors.black45),
+        style: TextStyle(fontSize: 11, color: grisTexto),
       ),
       const SizedBox(height: 16),
       FilledButton.icon(

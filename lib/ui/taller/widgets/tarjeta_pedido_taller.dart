@@ -87,7 +87,7 @@ class TarjetaPedidoTaller extends StatelessWidget {
                 pedido.entrega == MetodoEntrega.retiro
                     ? pedido.entrega.texto
                     : '${pedido.entrega.texto} · ${pedido.direccion}',
-                style: const TextStyle(fontSize: 12, color: Colors.black54),
+                style: const TextStyle(fontSize: 12, color: grisTexto),
               ),
               const Divider(height: 18),
               _linea('Total que pagó', pesos(pedido.total)),
@@ -113,7 +113,7 @@ class TarjetaPedidoTaller extends StatelessWidget {
                     const SizedBox(width: 6),
                     const Text(
                       'Calificó el comprador',
-                      style: TextStyle(fontSize: 11, color: Colors.black54),
+                      style: TextStyle(fontSize: 11, color: grisTexto),
                     ),
                   ],
                 ),
@@ -133,10 +133,7 @@ class TarjetaPedidoTaller extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 6, left: 10),
                     child: Text(
                       'Tu respuesta: ${calificacion.respuesta}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: grisTexto),
                     ),
                   )
                 else
@@ -239,7 +236,7 @@ class _DialogoResponderState extends State<DialogoResponder> {
             style: const TextStyle(
               fontSize: 13,
               fontStyle: FontStyle.italic,
-              color: Colors.black54,
+              color: grisTexto,
             ),
           ),
           const SizedBox(height: 12),

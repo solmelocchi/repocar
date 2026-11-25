@@ -95,7 +95,7 @@ class TarjetaProducto extends StatelessWidget {
                       fontWeight: pieza.taller.tieneCadete
                           ? FontWeight.w600
                           : FontWeight.normal,
-                      color: pieza.taller.tieneCadete ? verde : Colors.black54,
+                      color: pieza.taller.tieneCadete ? verde : grisTexto,
                     ),
                   ),
                 ],

@@ -89,6 +89,7 @@ class _EditarPerfilScreenState extends State<EditarPerfilScreen> {
             if (_esTaller) ...[
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
+                isExpanded: true,
                 initialValue: _zona,
                 decoration: const InputDecoration(
                   labelText: 'Zona',

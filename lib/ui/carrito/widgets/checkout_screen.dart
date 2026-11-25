@@ -156,7 +156,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ? 'El pago se hace dentro de la app con Mercado Pago.'
                     : 'Completá la dirección y la zona para poder pagar.',
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 12, color: Colors.black45),
+                style: const TextStyle(fontSize: 12, color: grisTexto),
               ),
             ] else
               const Card(
@@ -265,7 +265,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 child: Text(
                   'Este taller no tiene cadete propio: el envío lo cotiza la '
                   'empresa según tu zona.',
-                  style: TextStyle(fontSize: 11, color: Colors.black54),
+                  style: TextStyle(fontSize: 11, color: grisTexto),
                 ),
               ),
             if (entrega.metodo != MetodoEntrega.retiro) ...[
@@ -321,7 +321,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
                   'Envío: ${pesos(entrega.costo(taller))}',
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  style: const TextStyle(fontSize: 12, color: grisTexto),
                 ),
               ),
           ],

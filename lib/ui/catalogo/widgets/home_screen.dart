@@ -182,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Icon(
                         Icons.directions_car,
-                        color: auto == null ? Colors.black45 : azul,
+                        color: auto == null ? grisTexto : azul,
                         size: 20,
                       ),
                       const SizedBox(width: 10),
@@ -193,9 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               : '$auto',
                           style: TextStyle(
                             fontSize: 14,
-                            color: auto == null
-                                ? Colors.black54
-                                : Colors.black87,
+                            color: auto == null ? grisTexto : Colors.black87,
                             fontWeight: auto == null
                                 ? FontWeight.normal
                                 : FontWeight.w600,
@@ -208,11 +206,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: const Icon(
                             Icons.close,
                             size: 20,
-                            color: Colors.black45,
+                            color: grisTexto,
                           ),
                         )
                       else
-                        const Icon(Icons.expand_more, color: Colors.black45),
+                        const Icon(Icons.expand_more, color: grisTexto),
                     ],
                   ),
                 ),
@@ -318,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     'No hay repuestos con esos filtros.\nProbá sacando '
                     'alguno.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black54),
+                    style: TextStyle(color: grisTexto),
                   ),
                 ],
               ),

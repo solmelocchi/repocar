@@ -93,7 +93,7 @@ class _CuentaScreenState extends State<CuentaScreen> {
                               : sesion.esAdmin
                               ? 'Administración de TalleresYa'
                               : 'Comprador',
-                          style: const TextStyle(color: Colors.black54),
+                          style: const TextStyle(color: grisTexto),
                         ),
                       ],
                     ),
@@ -307,7 +307,7 @@ class _CuentaScreenState extends State<CuentaScreen> {
       style: const TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.bold,
-        color: Colors.black54,
+        color: grisTexto,
         letterSpacing: 0.6,
       ),
     ),

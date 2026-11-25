@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../dependencias.dart';
 import '../../../domain/models/auto.dart';
 import '../../core/estado_carga.dart';
+import '../../core/colores.dart';
 
 /// La hoja que sube desde abajo para elegir el auto: marca, modelo y
 /// año, siempre de la lista (nunca escrito a mano). Devuelve el auto
@@ -77,10 +78,11 @@ class _HojaAutoState extends State<_HojaAuto> {
               const SizedBox(height: 4),
               const Text(
                 'Te mostramos solo los repuestos que le sirven.',
-                style: TextStyle(fontSize: 13, color: Colors.black54),
+                style: TextStyle(fontSize: 13, color: grisTexto),
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
+                isExpanded: true,
                 key: ValueKey('marca-$_marca'),
                 initialValue: _marca,
                 decoration: const InputDecoration(
@@ -99,6 +101,7 @@ class _HojaAutoState extends State<_HojaAuto> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
+                isExpanded: true,
                 key: ValueKey('modelo-$_marca-$_modelo'),
                 initialValue: _modelo,
                 decoration: const InputDecoration(
@@ -121,6 +124,7 @@ class _HojaAutoState extends State<_HojaAuto> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<int>(
+                isExpanded: true,
                 key: ValueKey('anio-$_modelo-$_anio'),
                 initialValue: _anios.contains(_anio) ? _anio : null,
                 decoration: const InputDecoration(

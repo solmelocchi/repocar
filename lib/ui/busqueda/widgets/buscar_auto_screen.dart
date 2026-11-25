@@ -5,6 +5,7 @@ import '../../../domain/models/auto.dart';
 import '../../catalogo/widgets/resultados_screen.dart';
 import '../../core/estado_carga.dart';
 import '../../core/vistas_de_carga.dart';
+import '../../core/colores.dart';
 
 /// Elegir el auto. Los tres desplegables salen de la lista de vehículos
 /// que trae el view model: nadie escribe el modelo a mano, y por eso la
@@ -61,7 +62,8 @@ class _BuscarAutoScreenState extends State<BuscarAutoScreen> {
   Widget _formulario() {
     final vm = widget.deps.vehiculos;
 
-    return Padding(
+    // Se puede desplazar: con la letra grande no entra en la pantalla.
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -69,11 +71,12 @@ class _BuscarAutoScreenState extends State<BuscarAutoScreen> {
           const Text(
             'Elegí tu vehículo y te mostramos solo los repuestos que le '
             'sirven.',
-            style: TextStyle(fontSize: 15, color: Colors.black54),
+            style: TextStyle(fontSize: 15, color: grisTexto),
           ),
           const SizedBox(height: 24),
 
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: marca,
             decoration: const InputDecoration(
               labelText: 'Marca',
@@ -93,6 +96,7 @@ class _BuscarAutoScreenState extends State<BuscarAutoScreen> {
           const SizedBox(height: 16),
 
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: modelo,
             decoration: const InputDecoration(
               labelText: 'Modelo',
@@ -113,6 +117,7 @@ class _BuscarAutoScreenState extends State<BuscarAutoScreen> {
           const SizedBox(height: 16),
 
           DropdownButtonFormField<int>(
+            isExpanded: true,
             initialValue: anio,
             decoration: const InputDecoration(
               labelText: 'Año',
@@ -143,12 +148,12 @@ class _BuscarAutoScreenState extends State<BuscarAutoScreen> {
                 padding: EdgeInsets.all(14),
                 child: Row(
                   children: [
-                    Icon(Icons.lightbulb_outline, color: Colors.black45),
+                    Icon(Icons.lightbulb_outline, color: grisTexto),
                     SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         'Probá con Volkswagen · Gol Trend · 2014',
-                        style: TextStyle(fontSize: 13, color: Colors.black54),
+                        style: TextStyle(fontSize: 13, color: grisTexto),
                       ),
                     ),
                   ],

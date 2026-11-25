@@ -81,7 +81,7 @@ class _PreguntasDePiezaState extends State<PreguntasDePieza> {
             const SizedBox(height: 2),
             const Text(
               'Las preguntas y las respuestas las ven todos.',
-              style: TextStyle(fontSize: 12, color: Colors.black54),
+              style: TextStyle(fontSize: 12, color: grisTexto),
             ),
             const SizedBox(height: 12),
             if (!widget.esDelTaller && _vm.puedePreguntar) ...[
@@ -120,7 +120,7 @@ class _PreguntasDePiezaState extends State<PreguntasDePieza> {
                   widget.esDelTaller
                       ? 'Todavía no te hicieron preguntas.'
                       : 'Todavía nadie preguntó.',
-                  style: const TextStyle(color: Colors.black54),
+                  style: const TextStyle(color: grisTexto),
                 ),
               ],
               EstadoCarga.exito => [
@@ -193,7 +193,7 @@ class TarjetaPregunta extends StatelessWidget {
           ),
           Text(
             '${pregunta.autor} · ${hace(pregunta.fecha)}',
-            style: const TextStyle(fontSize: 12, color: Colors.black45),
+            style: const TextStyle(fontSize: 12, color: grisTexto),
           ),
           const SizedBox(height: 8),
           if (respuesta != null)
@@ -225,7 +225,7 @@ class TarjetaPregunta extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontStyle: FontStyle.italic,
-                color: Colors.black54,
+                color: grisTexto,
               ),
             ),
         ],

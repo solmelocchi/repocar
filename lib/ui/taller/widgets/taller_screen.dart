@@ -92,7 +92,9 @@ class _TallerScreenState extends State<TallerScreen> {
                   builder: (_) => PublicarScreen(deps: widget.deps),
                 ),
               ),
-              backgroundColor: naranja,
+              // Ámbar y no naranja: con letra blanca, el naranja daba
+              // un contraste de 2,8 (el mínimo es 4,5).
+              backgroundColor: ambar,
               foregroundColor: Colors.white,
               icon: const Icon(Icons.add),
               label: const Text('Publicar'),
@@ -177,7 +179,7 @@ class _TallerScreenState extends State<TallerScreen> {
                             'guardado en ${widget.deps.almacen.nombre}',
                             style: const TextStyle(
                               fontSize: 12,
-                              color: Colors.black54,
+                              color: grisTexto,
                             ),
                           ),
                         ],
@@ -194,7 +196,7 @@ class _TallerScreenState extends State<TallerScreen> {
                 child: Text(
                   'Todavía no publicaste ningún repuesto.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black54),
+                  style: TextStyle(color: grisTexto),
                 ),
               ),
             for (final pieza in misPiezas)
