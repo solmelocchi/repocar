@@ -72,11 +72,15 @@ class _IngresoScreenState extends State<IngresoScreen> {
       return;
     }
 
-    Navigator.pushReplacement(
+    // El taller a su panel, TalleresYa al de administración, el
+    // comprador al catálogo. Se BORRAN todas las pantallas de atrás:
+    // si un comprador entra como taller desde su Cuenta, abajo quedaban
+    // las pantallas del comprador y la flecha atrás volvía a ellas, con
+    // la sesión del taller. Igual que al registrarse y al cerrar sesión.
+    Navigator.pushAndRemoveUntil(
       context,
-      // El taller a su panel, TalleresYa al de administración, el
-      // comprador al catálogo.
       MaterialPageRoute(builder: (_) => pantallaPrincipal(widget.deps)),
+      (route) => false,
     );
   }
 
@@ -207,8 +211,11 @@ class _IngresoScreenState extends State<IngresoScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            // Wrap y no Row: con la letra grande (o en una pantalla
+            // angosta) el botón baja al renglón de abajo en vez de salirse.
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 const Text(
                   '¿No tenés cuenta?',
