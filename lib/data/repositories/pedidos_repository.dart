@@ -117,7 +117,9 @@ class PedidosRepository {
       final mapa = item as Map<String, dynamic>;
       final pieza = _catalogo.buscarPorId(mapa['pieza_id'] as String);
       if (pieza == null) continue;
-      items.add(ItemCarrito(pieza, cantidad: mapa['cantidad'] as int));
+      items.add(
+        ItemCarrito(pieza, cantidad: (mapa['cantidad'] as num).toInt()),
+      );
     }
     if (items.isEmpty) return null;
 
@@ -139,7 +141,7 @@ class PedidosRepository {
       items: items,
       entrega: _entregaDesde(crudo['entrega'] as String),
       direccion: crudo['direccion'] as String,
-      costoEnvio: crudo['costo_envio'] as int,
+      costoEnvio: (crudo['costo_envio'] as num).toInt(),
       comisionPct: (crudo['comision_pct'] as num).toDouble(),
       estado: _estadoDesde(crudo['estado'] as String),
       calificacion: _calificacionDesde(
@@ -385,7 +387,7 @@ class PedidosRepository {
   Calificacion? _calificacionDesde(Map<String, dynamic>? crudo) {
     if (crudo == null) return null;
     return Calificacion(
-      estrellas: crudo['estrellas'] as int,
+      estrellas: (crudo['estrellas'] as num).toInt(),
       comentario: crudo['comentario'] as String,
       respuesta: crudo['respuesta'] as String?,
     );
