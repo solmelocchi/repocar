@@ -147,6 +147,7 @@ class TarjetaPregunta extends StatelessWidget {
     required this.pregunta,
     this.alResponder,
     this.mostrarPieza = false,
+    this.taller,
   });
 
   final Pregunta pregunta;
@@ -154,6 +155,10 @@ class TarjetaPregunta extends StatelessWidget {
 
   /// En la lista del taller: de qué publicación es.
   final bool mostrarPieza;
+
+  /// En el panel de TalleresYa: de qué taller es la publicación, así
+  /// Ramallo sabe a quién preguntaron y quién respondió.
+  final String? taller;
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +176,9 @@ class TarjetaPregunta extends StatelessWidget {
         children: [
           if (mostrarPieza)
             Text(
-              pregunta.piezaTitulo,
+              taller == null
+                  ? pregunta.piezaTitulo
+                  : '${pregunta.piezaTitulo} · $taller',
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../dependencias.dart';
+import '../../../domain/cuit.dart';
 import '../../core/colores.dart';
 import '../../preguntas/widgets/preguntas_de_pieza.dart';
 
@@ -94,6 +95,15 @@ class _TodasLasPreguntas extends StatelessWidget {
 
   final Dependencias deps;
 
+  /// El nombre del taller dueño de la publicación (si no se encuentra,
+  /// su CUIT).
+  String _nombreDelTaller(String cuit) {
+    for (final taller in deps.sesion.talleres) {
+      if (soloNumeros(taller.cuit) == soloNumeros(cuit)) return taller.nombre;
+    }
+    return 'CUIT $cuit';
+  }
+
   @override
   Widget build(BuildContext context) {
     final vm = deps.controlDePreguntas;
@@ -107,7 +117,11 @@ class _TodasLasPreguntas extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 children: [
                   for (final pregunta in vm.todas)
-                    TarjetaPregunta(pregunta: pregunta, mostrarPieza: true),
+                    TarjetaPregunta(
+                      pregunta: pregunta,
+                      mostrarPieza: true,
+                      taller: _nombreDelTaller(pregunta.tallerCuit),
+                    ),
                 ],
               ),
       ),
