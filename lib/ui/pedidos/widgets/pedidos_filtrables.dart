@@ -31,6 +31,9 @@ class PedidosFiltrables extends StatefulWidget {
 class _PedidosFiltrablesState extends State<PedidosFiltrables> {
   final _texto = TextEditingController();
   EstadoPedido? _estado;
+
+  /// "Devueltos" es un chip más: elegirlo o elegir un estado se excluyen.
+  bool _soloDevueltos = false;
   OrdenDePedidos _orden = OrdenDePedidos.masNuevos;
 
   @override
@@ -56,6 +59,7 @@ class _PedidosFiltrablesState extends State<PedidosFiltrables> {
       widget.pedidos,
       texto: _texto.text,
       estado: _estado,
+      soloDevueltos: _soloDevueltos,
       orden: _orden,
     );
 
@@ -96,17 +100,32 @@ class _PedidosFiltrablesState extends State<PedidosFiltrables> {
               const SizedBox(width: 8),
               ChoiceChip(
                 label: const Text('Todos'),
-                selected: _estado == null,
-                onSelected: (_) => setState(() => _estado = null),
+                selected: _estado == null && !_soloDevueltos,
+                onSelected: (_) => setState(() {
+                  _estado = null;
+                  _soloDevueltos = false;
+                }),
               ),
               for (final estado in EstadoPedido.values) ...[
                 const SizedBox(width: 6),
                 ChoiceChip(
                   label: Text(estado.texto),
                   selected: _estado == estado,
-                  onSelected: (_) => setState(() => _estado = estado),
+                  onSelected: (_) => setState(() {
+                    _estado = estado;
+                    _soloDevueltos = false;
+                  }),
                 ),
               ],
+              const SizedBox(width: 6),
+              ChoiceChip(
+                label: const Text('Devueltos'),
+                selected: _soloDevueltos,
+                onSelected: (_) => setState(() {
+                  _estado = null;
+                  _soloDevueltos = true;
+                }),
+              ),
             ],
           ),
         ),
