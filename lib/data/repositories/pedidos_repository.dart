@@ -3,6 +3,7 @@ import 'dart:async';
 import '../../domain/cuit.dart';
 import '../../domain/models/envio.dart';
 import '../../domain/models/pedido.dart';
+import '../../domain/models/pregunta.dart';
 import '../../domain/models/taller.dart';
 import '../services/pedidos_service.dart';
 import 'catalogo_repository.dart';
@@ -11,6 +12,17 @@ import 'cuentas_repository.dart';
 /// Se quiso usar el botón de arrepentimiento después de los 10 días.
 class FueraDePlazo implements Exception {
   const FueraDePlazo();
+}
+
+/// Un comentario de calificación, o la respuesta del taller, con un
+/// teléfono, un mail o "WhatsApp". La misma regla que en las preguntas y
+/// las publicaciones: la venta tiene que quedar en RepoCar.
+class ComentarioConContacto implements Exception {
+  const ComentarioConContacto();
+
+  String get mensaje =>
+      'No se pueden poner teléfonos, mails ni WhatsApp: la venta se hace '
+      'por RepoCar.';
 }
 
 /// Se quiso comprar una pieza que ya no está a la venta.
@@ -299,6 +311,7 @@ class PedidosRepository {
     int estrellas,
     String comentario,
   ) async {
+    if (tieneDatosDeContacto(comentario)) throw const ComentarioConContacto();
     pedido.calificacion = Calificacion(
       estrellas: estrellas,
       comentario: comentario,
@@ -318,6 +331,7 @@ class PedidosRepository {
   }
 
   Future<void> responder(Pedido pedido, String respuesta) async {
+    if (tieneDatosDeContacto(respuesta)) throw const ComentarioConContacto();
     pedido.calificacion?.respuesta = respuesta;
     await _servicio.guardar(_aCrudo(pedido));
     _avisarCambio(pedido, TipoDeCambio.respuesta);

@@ -172,11 +172,30 @@ class PedidosViewModel extends ChangeNotifier {
   Future<void> cambiarEstado(Pedido pedido, EstadoPedido estado) =>
       _repositorio.cambiarEstado(pedido, estado);
 
-  Future<void> calificar(Pedido pedido, int estrellas, String comentario) =>
-      _repositorio.calificar(pedido, estrellas, comentario);
+  /// Devuelve el motivo si no se pudo guardar (por ejemplo, un teléfono en
+  /// el comentario); null si salió bien.
+  Future<String?> calificar(
+    Pedido pedido,
+    int estrellas,
+    String comentario,
+  ) async {
+    try {
+      await _repositorio.calificar(pedido, estrellas, comentario);
+      return null;
+    } on ComentarioConContacto catch (error) {
+      return error.mensaje;
+    }
+  }
 
-  Future<void> responder(Pedido pedido, String respuesta) =>
-      _repositorio.responder(pedido, respuesta);
+  /// Como [calificar]: el motivo si no se pudo, null si salió bien.
+  Future<String?> responder(Pedido pedido, String respuesta) async {
+    try {
+      await _repositorio.responder(pedido, respuesta);
+      return null;
+    } on ComentarioConContacto catch (error) {
+      return error.mensaje;
+    }
+  }
 
   /// El botón de arrepentimiento. Devuelve false si ya pasó el plazo.
   Future<bool> arrepentirse(Pedido pedido) async {
@@ -211,13 +230,32 @@ class PedidosViewModel extends ChangeNotifier {
   List<Pedido> get _delPeriodo =>
       _repositorio.desde(_periodo.desde(DateTime.now()));
 
-  int get pedidosDelPeriodo => _delPeriodo.length;
+  /// Los pedidos del período que cuentan como venta. Los devueltos con el
+  /// botón de arrepentimiento no: esa plata se le reintegra al comprador
+  /// y TalleresYa no cobra su comisión.
+  List<Pedido> get _vendidosDelPeriodo => [
+    for (final pedido in _delPeriodo)
+      if (!pedido.arrepentido) pedido,
+  ];
+
+  List<Pedido> get _devueltosDelPeriodo => [
+    for (final pedido in _delPeriodo)
+      if (pedido.arrepentido) pedido,
+  ];
+
+  int get pedidosDelPeriodo => _vendidosDelPeriodo.length;
+
+  /// Cuántos pedidos se devolvieron en el período, y por cuánto.
+  int get devueltosDelPeriodo => _devueltosDelPeriodo.length;
+
+  int get devueltoDelPeriodo =>
+      _devueltosDelPeriodo.fold(0, (suma, p) => suma + p.subtotal);
 
   int get vendidoDelPeriodo =>
-      _delPeriodo.fold(0, (suma, p) => suma + p.subtotal);
+      _vendidosDelPeriodo.fold(0, (suma, p) => suma + p.subtotal);
 
   int get comisionDelPeriodo =>
-      _delPeriodo.fold(0, (suma, p) => suma + p.comision);
+      _vendidosDelPeriodo.fold(0, (suma, p) => suma + p.comision);
 
   /// Cuánto vendió cada taller y cuánta comisión le toca cobrar a
   /// TalleresYa, del que más vendió al que menos.
@@ -226,11 +264,13 @@ class PedidosViewModel extends ChangeNotifier {
       for (final taller in talleres)
         (
           taller: taller,
-          ventas: _delPeriodo.where((p) => p.taller.cuit == taller.cuit).length,
-          vendido: _delPeriodo
+          ventas: _vendidosDelPeriodo
+              .where((p) => p.taller.cuit == taller.cuit)
+              .length,
+          vendido: _vendidosDelPeriodo
               .where((p) => p.taller.cuit == taller.cuit)
               .fold(0, (suma, p) => suma + p.subtotal),
-          comision: _delPeriodo
+          comision: _vendidosDelPeriodo
               .where((p) => p.taller.cuit == taller.cuit)
               .fold(0, (suma, p) => suma + p.comision),
         ),
