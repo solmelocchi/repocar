@@ -96,6 +96,34 @@ void main() {
       );
     });
 
+    group('los devueltos', () {
+      // Lista aparte: la de arriba la usan las otras pruebas tal cual.
+      final conDevuelto = [
+        _pedido('#1044', 2),
+        _pedido('#2003', 7)..arrepentidoEl = DateTime.now(),
+        _pedido('#999', 1),
+      ];
+
+      test('con soloDevueltos quedan solo los arrepentidos', () {
+        expect(
+          filtrarPedidos(conDevuelto, soloDevueltos: true).single.numero,
+          '#2003',
+        );
+      });
+
+      test('sin soloDevueltos están todos, como antes', () {
+        expect(filtrarPedidos(conDevuelto).map((p) => p.numero), [
+          '#999',
+          '#1044',
+          '#2003',
+        ]);
+        expect(
+          filtrarPedidos(conDevuelto, soloDevueltos: false).length,
+          filtrarPedidos(conDevuelto).length,
+        );
+      });
+    });
+
     test('el período del resumen', () {
       final ahora = DateTime(2026, 11, 24);
       expect(PeriodoDeResumen.semana.desde(ahora), DateTime(2026, 11, 17));

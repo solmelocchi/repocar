@@ -24,15 +24,20 @@ int numeroDe(Pedido pedido) =>
 
 /// Busca por número, comprador, taller o repuesto; filtra por estado; y
 /// ordena. Los filtros se suman.
+///
+/// [soloDevueltos] deja solo los pedidos en los que el comprador se
+/// arrepintió: una devolución cambia la comisión que cobra TalleresYa.
 List<Pedido> filtrarPedidos(
   Iterable<Pedido> pedidos, {
   String texto = '',
   EstadoPedido? estado,
+  bool soloDevueltos = false,
   OrdenDePedidos orden = OrdenDePedidos.masNuevos,
 }) {
   final buscado = texto.trim().toLowerCase().replaceAll('#', '');
   final lista = pedidos
       .where((p) => estado == null || p.estado == estado)
+      .where((p) => !soloDevueltos || p.arrepentido)
       .where(
         (p) =>
             buscado.isEmpty ||
