@@ -4,6 +4,7 @@ import '../../../data/services/fuente_de_fotos.dart';
 import '../../../dependencias.dart';
 import '../../../domain/models/auto.dart';
 import '../../../domain/models/pieza.dart';
+import '../../../domain/models/pregunta.dart';
 import '../../core/aviso.dart';
 import '../../core/colores.dart';
 import '../../core/iconos.dart';
@@ -28,6 +29,9 @@ class PublicarScreen extends StatefulWidget {
 }
 
 class _PublicarScreenState extends State<PublicarScreen> {
+  static const _sinContacto =
+      'No se pueden poner teléfonos, mails ni WhatsApp: la venta se hace por RepoCar.';
+
   final _formulario = GlobalKey<FormState>();
   final _titulo = TextEditingController();
   final _precio = TextEditingController();
@@ -272,9 +276,15 @@ class _PublicarScreenState extends State<PublicarScreen> {
                   hintText: 'Ej: Alternador Bosch 90A',
                   border: OutlineInputBorder(),
                 ),
-                validator: (valor) => (valor == null || valor.trim().isEmpty)
-                    ? 'Poné un título'
-                    : null,
+                validator: (valor) {
+                  if (valor == null || valor.trim().isEmpty) {
+                    return 'Poné un título';
+                  }
+                  // La misma regla que en las preguntas: la venta no se va
+                  // de la app por un teléfono puesto en la publicación.
+                  if (tieneDatosDeContacto(valor)) return _sinContacto;
+                  return null;
+                },
               ),
               const SizedBox(height: 14),
               TextFormField(
@@ -301,9 +311,13 @@ class _PublicarScreenState extends State<PublicarScreen> {
                   hintText: 'Estado real de la pieza, garantía, kilómetros...',
                   border: OutlineInputBorder(),
                 ),
-                validator: (valor) => (valor == null || valor.trim().isEmpty)
-                    ? 'Contá cómo está la pieza'
-                    : null,
+                validator: (valor) {
+                  if (valor == null || valor.trim().isEmpty) {
+                    return 'Contá cómo está la pieza';
+                  }
+                  if (tieneDatosDeContacto(valor)) return _sinContacto;
+                  return null;
+                },
               ),
               const SizedBox(height: 18),
 
