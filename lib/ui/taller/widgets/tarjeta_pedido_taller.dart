@@ -217,6 +217,9 @@ class DialogoResponder extends StatefulWidget {
 class _DialogoResponderState extends State<DialogoResponder> {
   final _texto = TextEditingController();
 
+  /// Por qué no se pudo responder (se muestra debajo del campo).
+  String? _error;
+
   @override
   void dispose() {
     _texto.dispose();
@@ -244,9 +247,11 @@ class _DialogoResponderState extends State<DialogoResponder> {
             controller: _texto,
             maxLines: 3,
             autofocus: true,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Dale tu versión al comprador',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              errorText: _error,
+              errorMaxLines: 3,
             ),
           ),
         ],
@@ -257,10 +262,18 @@ class _DialogoResponderState extends State<DialogoResponder> {
           child: const Text('Cancelar'),
         ),
         FilledButton(
-          onPressed: () {
+          onPressed: () async {
             final texto = _texto.text.trim();
             if (texto.isEmpty) return;
-            widget.deps.pedidos.responder(widget.pedido, texto);
+            final error = await widget.deps.pedidos.responder(
+              widget.pedido,
+              texto,
+            );
+            if (!context.mounted) return;
+            if (error != null) {
+              setState(() => _error = error);
+              return;
+            }
             Navigator.pop(context);
           },
           style: FilledButton.styleFrom(minimumSize: const Size(100, 44)),

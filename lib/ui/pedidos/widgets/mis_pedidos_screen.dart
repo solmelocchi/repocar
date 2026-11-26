@@ -22,6 +22,9 @@ class MisPedidosScreen extends StatefulWidget {
 }
 
 class _MisPedidosScreenState extends State<MisPedidosScreen> {
+  /// false: las compras; true: las devoluciones (botón de arrepentimiento).
+  bool _verDevoluciones = false;
+
   @override
   void initState() {
     super.initState();
@@ -74,10 +77,49 @@ class _MisPedidosScreenState extends State<MisPedidosScreen> {
       );
     }
 
+    // Las compras y las devoluciones por separado: así se ve enseguida a
+    // qué pedido se le usó el botón de arrepentimiento.
+    final compras = [
+      for (final pedido in mios)
+        if (!pedido.arrepentido) pedido,
+    ];
+    final devoluciones = [
+      for (final pedido in mios)
+        if (pedido.arrepentido) pedido,
+    ];
+    final lista = _verDevoluciones ? devoluciones : compras;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        for (final pedido in mios)
+        Wrap(
+          spacing: 8,
+          children: [
+            ChoiceChip(
+              label: Text('Pedidos (${compras.length})'),
+              selected: !_verDevoluciones,
+              onSelected: (_) => setState(() => _verDevoluciones = false),
+            ),
+            ChoiceChip(
+              label: Text('Devoluciones (${devoluciones.length})'),
+              selected: _verDevoluciones,
+              onSelected: (_) => setState(() => _verDevoluciones = true),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (lista.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Text(
+              _verDevoluciones
+                  ? 'No devolviste ninguna compra.'
+                  : 'No tenés pedidos sin devolver.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: grisTexto),
+            ),
+          ),
+        for (final pedido in lista)
           _TarjetaPedido(pedido: pedido, vm: vm, deps: widget.deps),
       ],
     );
@@ -243,6 +285,9 @@ class _DialogoCalificarState extends State<DialogoCalificar> {
   final _comentario = TextEditingController();
   int _estrellas = 5;
 
+  /// Por qué no se pudo calificar (se muestra debajo del comentario).
+  String? _error;
+
   @override
   void dispose() {
     _comentario.dispose();
@@ -277,9 +322,11 @@ class _DialogoCalificarState extends State<DialogoCalificar> {
           TextField(
             controller: _comentario,
             maxLines: 3,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Contá cómo fue la compra (opcional)',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              errorText: _error,
+              errorMaxLines: 3,
             ),
           ),
           const SizedBox(height: 8),
@@ -295,12 +342,17 @@ class _DialogoCalificarState extends State<DialogoCalificar> {
           child: const Text('Ahora no'),
         ),
         FilledButton(
-          onPressed: () {
-            widget.vm.calificar(
+          onPressed: () async {
+            final error = await widget.vm.calificar(
               widget.pedido,
               _estrellas,
               _comentario.text.trim(),
             );
+            if (!context.mounted) return;
+            if (error != null) {
+              setState(() => _error = error);
+              return;
+            }
             Navigator.pop(context);
           },
           style: FilledButton.styleFrom(minimumSize: const Size(100, 44)),

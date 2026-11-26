@@ -165,6 +165,18 @@ class _Resumen extends StatelessWidget {
                     ),
                   ],
                 ),
+                // Las devoluciones, aparte: no suman a lo vendido ni a la
+                // comisión, porque esa plata vuelve al comprador.
+                if (vm.devueltosDelPeriodo > 0) ...[
+                  const SizedBox(height: 10),
+                  _Numero(
+                    titulo: 'Devoluciones (sin comisión)',
+                    valor:
+                        '${vm.devueltosDelPeriodo} · '
+                        '${pesos(vm.devueltoDelPeriodo)}',
+                    icono: Icons.undo,
+                  ),
+                ],
                 const SizedBox(height: 22),
                 const Text(
                   'Por taller',
